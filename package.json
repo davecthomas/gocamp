@@ -1,0 +1,12 @@
+{
+  "name": "rockies-line",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Austin to Seattle park-to-park camping route planner",
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "check": "node --check public/app.js && node --check public/data/geo.js && node --check public/data/climate.js && node --check public/data/chargers.js",
+    "dev": "npx serve public"
+  }
+}

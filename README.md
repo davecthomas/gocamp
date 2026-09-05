@@ -46,3 +46,14 @@ Edit `index.html` and push. Vercel redeploys on every push to `main`.
 database, drawn on the map with a toggle to hide them. The longest gap between
 consecutive sites on the default route is 249 miles, Rawlins WY to Jackson WY, and the
 page warns when your reserve leaves less usable range than that gap needs.
+
+## Deploying
+
+`index.html` is the whole site. Two Vercel projects build from this repo:
+
+- **rockies-line** runs `bash build.sh`, which stages `index.html` into `public/`.
+  That build command was set when the project was first created by file upload,
+  and `build.sh` exists to satisfy it.
+- **rockies-line-site** builds the repo root directly with no build step.
+
+GitHub Pages also serves `main` at https://davecthomas.github.io/rockies-line/

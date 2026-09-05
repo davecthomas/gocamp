@@ -10,6 +10,9 @@ The page is a single self-contained `index.html`. No build step, no dependencies
 
 - **Real map.** US state boundaries from public GeoJSON, projected with Albers equal-area
   conic, with the route plotted from actual latitude and longitude. Zoom, pan, fit-to-trip.
+- **Detail on zoom.** Three tiers: parks and cities at rest, route towns and highway numbers
+  past 1.7x, Supercharger names past 3.2x. Labels are placed in priority order and colliding
+  ones are dropped, so dense areas like the Front Range stay readable.
 - **Clickable stops.** Every pin opens elevation, leg distance and time, campground,
   dog rules, expected date, typical weather, and booking links.
 - **Trip settings** that drive everything below them: charging cadence, nights per stop,

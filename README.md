@@ -47,6 +47,21 @@ database, drawn on the map with a toggle to hide them. The longest gap between
 consecutive sites on the default route is 249 miles, Rawlins WY to Jackson WY, and the
 page warns when your reserve leaves less usable range than that gap needs.
 
+## Mapbox token
+
+The map uses Mapbox GL with a public `pk.*` token. The token is **not** committed:
+
+1. Put it in a local `.env` as `MAPBOX_TOKEN=pk...` (gitignored, see `.env.example`)
+2. Add the same `MAPBOX_TOKEN` to the Vercel project's Environment Variables
+3. `build.sh` substitutes it into `public/index.html` at build time
+
+A `pk.*` token ships inside the served page and anyone can read it there, so keeping
+it out of git is about avoiding repo scraping and easy rotation, not secrecy. Restrict
+it by URL in the Mapbox dashboard.
+
+Without a token the page falls back to the built-in schematic SVG map, which needs no
+network access at all.
+
 ## Deploying
 
 `index.html` is the whole site. Two Vercel projects build from this repo:

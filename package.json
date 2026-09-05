@@ -1,12 +1,33 @@
 {
   "name": "rockies-line",
+  "version": "2.0.0",
   "private": true,
-  "version": "1.0.0",
-  "description": "Austin to Seattle park-to-park camping route planner",
-  "type": "module",
-  "engines": { "node": ">=20" },
+  "description": "Camping route planner: park-to-park scenarios with EV range, weather and charging",
   "scripts": {
-    "check": "node --check public/app.js && node --check public/data/geo.js && node --check public/data/climate.js && node --check public/data/chargers.js",
-    "dev": "npx serve public"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "mapbox-gl": "^3.6.0",
+    "next": "^15.0.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "yaml": "^2.9.0"
+  },
+  "devDependencies": {
+    "@types/mapbox-gl": "^3.4.0",
+    "@types/node": "^22.9.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.5"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }

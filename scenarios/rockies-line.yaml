@@ -1,0 +1,1414 @@
+# The Rockies Line.
+# A scenario is data, not code: legs, geometry, chargers and vehicle assumptions.
+# Shared reference data (climate normals) lives in lib/data and is keyed by station.
+
+slug: rockies-line
+name: The Rockies Line
+eyebrow: Scenario 1
+headline: Austin to Seattle, park to park
+summary: Palo Duro Canyon, Golden Gate Canyon, Rocky Mountain, Grand Teton, and
+  Yellowstone all sit within a few miles of this line. Glacier is a marked
+  branch off it. Built for a 2027 Lucid Gravity GT and a dog who’s happiest off
+  leash in the gaps between parks.
+statesCrossed: 6
+vehicle:
+  name: 2027 Lucid Gravity GT (Grand Touring)
+  batteryKwh: 112
+  epaRangeMi: 450
+  curbLb: 6173
+  dragCoefficient: 0.24
+  frontalAreaM2: 2.7
+  rollingResistance: 0.008
+  drivetrainEfficiency: 0.9
+  climbEfficiency: 0.88
+  regenRecovery: 0.65
+  fastChargeNote: 10–80% in ≈20 min
+  port: NACS
+  sourceNote: Lucid’s published Gravity numbers, carried forward as a 2027
+    planning estimate. Confirm your build’s EPA rating and wheel size before you
+    set a charging plan; larger wheels trade range for grip.
+defaults:
+  cadenceMi: 250
+  nights: 1
+  avgSpeedMph: 65
+  payloadLb: 620
+  reservePct: 25
+  startDate: 2027-06-19
+  includeBranch: false
+payloadBreakdown:
+  adults: 370
+  dog: 50
+  gear: 200
+branch:
+  id: glacier
+  label: Include the Glacier NP branch
+  sublabel: Missoula → Logan Pass → rejoin near Spokane
+legs:
+  - id: l1
+    from: Austin, TX
+    to: Amarillo, TX
+    title: Amarillo, TX
+    miles: 480
+    minutes: 435
+    elevation:
+      startFt: 489
+      endFt: 3676
+    badge:
+      kind: sp
+      text: State Park
+    note: Long first day across the plains. Second-largest canyon in the US.
+    dog:
+      level: good
+      note: Leashed dogs welcome on every trail and every campsite.
+    overnight: true
+    parkId: palo-duro
+    camp: Palo Duro Canyon State Park — Hackberry Camp Area
+    station: amarillo
+    links:
+      - label: Park info
+        url: https://tpwd.texas.gov/state-parks/palo-duro-canyon
+      - label: Trails (AllTrails)
+        url: https://www.alltrails.com/parks/us/texas/palo-duro-canyon-state-park
+      - label: Reserve campsite
+        url: https://texasstateparks.reserveamerica.com/camping/palo-duro-canyon-state-park/r/facilityDetails.do?contractCode=TX&parkId=1200105
+        reserve: true
+  - id: l2
+    from: Amarillo, TX
+    to: Denver, CO
+    title: Denver, CO
+    miles: 440
+    minutes: 390
+    elevation:
+      startFt: 3676
+      endFt: 5280
+    badge:
+      kind: city
+      text: Staging city
+    note: Last night before the climbing starts. Charge to 100% here if driving
+      Trail Ridge next.
+    dog:
+      level: good
+      note: Golden Gate Canyon SP allows leashed dogs on all its trails.
+    overnight: true
+    parkId: golden-gate
+    camp: Golden Gate Canyon SP (30 min west) or push into the metro
+    station: denver
+    links:
+      - label: Park info
+        url: https://cpw.state.co.us/placestogo/parks/goldengatecanyon
+      - label: Trails (AllTrails)
+        url: https://www.alltrails.com/parks/us/colorado/golden-gate-canyon-state-park
+      - label: Reserve campsite
+        url: https://www.cpwshop.com/camping/golden-gate-canyon-state-park/r/campgroundDetails.page?parkID=50025
+        reserve: true
+  - id: l3
+    from: Denver, CO
+    to: Estes Park, CO
+    title: Estes Park, CO
+    miles: 65
+    minutes: 90
+    elevation:
+      startFt: 5280
+      endFt: 7522
+    badge:
+      kind: city
+      text: Gateway town
+    note: RMNP gateway. This is where the timed-entry permit and NPS pet rules begin.
+    dog:
+      level: good
+      note: Downtown and the surrounding forest are dog-friendly. The restrictions
+        start at the entrance station.
+    station: estes
+  - id: l4
+    from: Estes Park, CO
+    to: Alpine Visitor Center
+    title: Trail Ridge Road summit
+    miles: 25
+    minutes: 60
+    elevation:
+      startFt: 7522
+      endFt: 12183
+    badge:
+      kind: np
+      text: Rocky Mountain NP
+    note: Highest continuous paved road in the US. Open roughly Memorial Day–mid
+      October only.
+    dog:
+      level: restricted
+      note: RMNP bans dogs on every trail and boardwalk, even leashed. Pets stay in
+        the car, the campground, or within 100 ft of the road.
+    parkId: rmnp
+    camp: Timber Creek CG (west side, after the descent)
+    station: estes
+    stationLiftFt: 4661
+    links:
+      - label: Park info
+        url: https://www.nps.gov/romo/index.htm
+      - label: Trails (AllTrails)
+        url: https://www.alltrails.com/parks/us/colorado/rocky-mountain-national-park
+      - label: Road status
+        url: https://www.nps.gov/romo/planyourvisit/road_status.htm
+      - label: Timed-entry permits
+        url: https://www.nps.gov/romo/planyourvisit/timed-entry-permit-system.htm
+  - id: l5
+    from: Alpine Visitor Center
+    to: Grand Lake, CO
+    title: Grand Lake, CO
+    miles: 23
+    minutes: 60
+    elevation:
+      startFt: 12183
+      endFt: 8369
+    badge:
+      kind: np
+      text: RMNP west exit
+    note: Steep descent. Regen returns part of what the climb spent.
+    dog:
+      level: restricted
+      note: Same RMNP rule through the west side.
+    overnight: true
+    camp: Timber Creek CG
+    station: grandlake
+    links:
+      - label: Reserve campsite
+        url: https://www.recreation.gov/search?q=Timber%20Creek%20Campground
+        reserve: true
+  - id: l6
+    from: Grand Lake, CO
+    to: Jackson, WY
+    title: Jackson, WY
+    miles: 440
+    minutes: 465
+    elevation:
+      startFt: 8369
+      endFt: 6237
+    badge:
+      kind: nf
+      text: Bridger-Teton NF en route
+    note: The long haul of the trip, via Walden, Rawlins, Lander, and Dubois. Split
+      into two driving days if the pace feels long.
+    dog:
+      level: good
+      note: Bridger-Teton NF dispersed sites and trails allow leashed dogs, the
+        longest stretch on the route where dogs can be on trails.
+    overnight: true
+    parkId: bridger-teton
+    camp: Gros Ventre CG or Bridger-Teton NF dispersed sites
+    station: jackson
+    links:
+      - label: Forest info
+        url: https://www.fs.usda.gov/btnf
+      - label: Trails (AllTrails)
+        url: https://www.alltrails.com/parks/us/wyoming/bridger-teton-national-forest
+      - label: Reserve campsite
+        url: https://www.recreation.gov/search?q=Gros%20Ventre%20Campground
+        reserve: true
+  - id: l7
+    from: Jackson, WY
+    to: Jenny Lake, WY
+    title: Grand Teton NP (Jenny Lake)
+    miles: 20
+    minutes: 30
+    elevation:
+      startFt: 6237
+      endFt: 6783
+    badge:
+      kind: np
+      text: Grand Teton NP
+    note: Book Recreation.gov exactly 6 months ahead; this campground sells out
+      same-day.
+    dog:
+      level: restricted
+      note: Pets allowed on paved pathways, roads, and in campgrounds and parking
+        lots. Backcountry trails are off limits.
+    overnight: true
+    parkId: grand-teton
+    camp: Jenny Lake CG or Colter Bay CG
+    station: jackson
+    links:
+      - label: Park info
+        url: https://www.nps.gov/grte/index.htm
+      - label: Trails (AllTrails)
+        url: https://www.alltrails.com/parks/us/wyoming/grand-teton-national-park
+      - label: Reserve Jenny Lake CG
+        url: https://www.recreation.gov/search?q=Jenny%20Lake%20Campground
+        reserve: true
+      - label: Reserve Colter Bay CG
+        url: https://www.recreation.gov/search?q=Colter%20Bay%20Campground
+        reserve: true
+  - id: l8
+    from: Jenny Lake, WY
+    to: Canyon Village, WY
+    title: Yellowstone — Old Faithful to Canyon
+    miles: 96
+    minutes: 150
+    elevation:
+      startFt: 6783
+      endFt: 7926
+    badge:
+      kind: np
+      text: Yellowstone NP
+    note: Enter at South Entrance, loop past Old Faithful and the Grand Canyon of
+      the Yellowstone.
+    dog:
+      level: restricted
+      note: Pets must stay within 100 ft of roads, parking areas, and campgrounds. No
+        trails or boardwalks, no exceptions.
+    overnight: true
+    parkId: yellowstone
+    camp: Canyon Village or Madison CG
+    station: westyell
+    stationLiftFt: 1259
+    links:
+      - label: Park info
+        url: https://www.nps.gov/yell/index.htm
+      - label: Trails (AllTrails)
+        url: https://www.alltrails.com/parks/us/wyoming/yellowstone-national-park
+      - label: Reserve campsite
+        url: https://secure.yellowstonenationalparklodges.com/booking/lodging
+        reserve: true
+  - id: l9
+    from: Canyon Village, WY
+    to: West Yellowstone, MT
+    title: West Yellowstone, MT
+    miles: 40
+    minutes: 60
+    elevation:
+      startFt: 7926
+      endFt: 6667
+    badge:
+      kind: city
+      text: Gateway town
+    note: Resupply and charge before the Montana stretch.
+    dog:
+      level: good
+      note: Town and nearby Gallatin NF trails are leash-friendly.
+    station: westyell
+  - id: l10
+    from: West Yellowstone, MT
+    to: Bozeman, MT
+    title: Bozeman, MT
+    miles: 90
+    minutes: 105
+    elevation:
+      startFt: 6667
+      endFt: 4820
+    badge:
+      kind: city
+      text: City
+    note: Last resupply stop before the Missoula fork.
+    dog:
+      level: good
+      note: Several off-leash city parks if the dog needs to run.
+    station: bozeman
+  - id: l11
+    from: Bozeman, MT
+    to: Missoula, MT
+    title: Missoula, MT
+    miles: 200
+    minutes: 180
+    elevation:
+      startFt: 4820
+      endFt: 3209
+    badge:
+      kind: city
+      text: Decision point
+    note: Glacier or straight to Seattle. Toggle the switch at the top to see how
+      the numbers change.
+    dog:
+      level: good
+      note: City is dog-friendly.
+    station: missoula
+finalLegs:
+  - id: l12
+    from: Missoula, MT
+    to: Spokane, WA
+    title: Spokane, WA
+    miles: 200
+    minutes: 180
+    elevation:
+      startFt: 3209
+      endFt: 1843
+    badge:
+      kind: city
+      text: City
+    note: Direct I-90 stretch if skipping Glacier.
+    dog:
+      level: good
+      note: Farragut SP allows leashed dogs on all its trails.
+    overnight: true
+    parkId: farragut
+    camp: Farragut SP (Idaho, optional overnight)
+    station: spokane
+    links:
+      - label: Park info
+        url: https://parksandrecreation.idaho.gov/parks/farragut/
+      - label: Trails (AllTrails)
+        url: https://www.alltrails.com/parks/us/idaho/farragut-state-park
+      - label: Reserve campsite
+        url: http://getoutside.idaho.gov/Farragut
+        reserve: true
+  - id: l13
+    from: Spokane, WA
+    to: Seattle, WA
+    title: Seattle, WA
+    miles: 280
+    minutes: 255
+    elevation:
+      startFt: 1843
+      endFt: 175
+    badge:
+      kind: city
+      text: Arrival
+    note: "Last leg: 1,668 ft of net descent."
+    dog:
+      level: good
+      note: Trip complete.
+    station: seattle
+branchLegs:
+  - id: b1
+    from: Missoula, MT
+    to: Logan Pass
+    title: Logan Pass, Glacier NP
+    miles: 150
+    minutes: 150
+    elevation:
+      startFt: 3209
+      endFt: 6646
+    badge:
+      kind: np
+      text: Glacier NP · branch
+    note: Going-to-the-Sun Road, open roughly late June–mid September only. Adds
+      about 1–2 days to the trip.
+    dog:
+      level: restricted
+      note: "Glacier matches the other parks: no dogs on any trail, even leashed.
+        Front-country and campgrounds only."
+    overnight: true
+    parkId: glacier
+    camp: Apgar CG or Fish Creek CG
+    station: westglacier
+    stationLiftFt: 3431
+    links:
+      - label: Park info
+        url: https://www.nps.gov/glac/index.htm
+      - label: Trails (AllTrails)
+        url: https://www.alltrails.com/parks/us/montana/glacier-national-park
+      - label: Road status
+        url: https://www.nps.gov/glac/planyourvisit/directions.htm
+      - label: Reserve campsite
+        url: https://www.recreation.gov/search?q=Fish%20Creek%20Campground
+        reserve: true
+  - id: b2
+    from: Logan Pass
+    to: Spokane, WA
+    title: Spokane, WA (via Glacier)
+    miles: 230
+    minutes: 270
+    elevation:
+      startFt: 6646
+      endFt: 1843
+    badge:
+      kind: city
+      text: Rejoin I-90
+    note: Rejoins I-90 near Sandpoint rather than backtracking through Missoula.
+    dog:
+      level: good
+      note: Farragut SP allows leashed dogs on all its trails.
+    overnight: true
+    parkId: farragut
+    camp: Farragut SP (Idaho, optional overnight)
+    station: spokane
+    links:
+      - label: Park info
+        url: https://parksandrecreation.idaho.gov/parks/farragut/
+      - label: Trails (AllTrails)
+        url: https://www.alltrails.com/parks/us/idaho/farragut-state-park
+      - label: Reserve campsite
+        url: http://getoutside.idaho.gov/Farragut
+        reserve: true
+  - id: l13g
+    from: Spokane, WA
+    to: Seattle, WA
+    title: Seattle, WA
+    miles: 280
+    minutes: 255
+    elevation:
+      startFt: 1843
+      endFt: 175
+    badge:
+      kind: city
+      text: Arrival
+    note: "Last leg: 1,668 ft of net descent."
+    dog:
+      level: good
+      note: Trip complete.
+    station: seattle
+roadSeasons:
+  - legId: l4
+    name: Trail Ridge Road
+    from: 05-24
+    to: 10-15
+    summitFt: 12183
+  - legId: b1
+    name: Going-to-the-Sun Road
+    from: 06-25
+    to: 09-15
+geometry:
+  main:
+    - - 30.2672
+      - -97.7431
+    - - 31.0635
+      - -98.1817
+    - - 31.7093
+      - -98.9912
+    - - 32.4487
+      - -99.7331
+    - - 33.5779
+      - -101.855
+    - - 35.222
+      - -101.831
+    - - 36.0595
+      - -102.513
+    - - 36.9034
+      - -104.439
+    - - 37.1695
+      - -104.501
+    - - 38.2544
+      - -104.609
+    - - 38.8339
+      - -104.821
+    - - 39.7392
+      - -104.99
+    - - 40.015
+      - -105.27
+    - - 40.2247
+      - -105.272
+    - - 40.3772
+      - -105.522
+    - - 40.4419
+      - -105.755
+    - - 40.2503
+      - -105.823
+    - - 40.7302
+      - -106.284
+    - - 41.455
+      - -106.806
+    - - 41.7911
+      - -107.239
+    - - 42.833
+      - -108.731
+    - - 43.5333
+      - -109.63
+    - - 43.8419
+      - -110.515
+    - - 43.4799
+      - -110.762
+    - - 43.7517
+      - -110.722
+    - - 44.138
+      - -110.664
+    - - 44.416
+      - -110.573
+    - - 44.4605
+      - -110.828
+    - - 44.645
+      - -110.86
+    - - 44.7358
+      - -110.494
+    - - 44.645
+      - -110.86
+    - - 44.6621
+      - -111.104
+    - - 45.2841
+      - -111.309
+    - - 45.677
+      - -111.043
+    - - 46.0038
+      - -112.535
+    - - 46.3991
+      - -112.73
+    - - 46.8721
+      - -113.994
+  direct:
+    - - 46.8721
+      - -113.994
+    - - 47.1919
+      - -114.891
+    - - 47.4735
+      - -115.925
+    - - 47.6777
+      - -116.781
+    - - 47.6588
+      - -117.426
+    - - 47.1301
+      - -119.278
+    - - 46.9965
+      - -120.548
+    - - 47.4246
+      - -121.414
+    - - 47.6062
+      - -122.332
+  branch:
+    - - 46.8721
+      - -113.994
+    - - 47.6935
+      - -114.163
+    - - 48.1958
+      - -114.313
+    - - 48.5169
+      - -113.986
+    - - 48.6963
+      - -113.718
+    - - 48.5169
+      - -113.986
+    - - 48.3883
+      - -115.556
+    - - 48.6916
+      - -116.318
+    - - 48.2766
+      - -116.553
+    - - 47.6777
+      - -116.781
+mapStops:
+  - id: austin
+    label: Austin, TX
+    lat: 30.2672
+    lon: -97.7431
+    kind: start
+  - id: l1
+    label: Amarillo · Palo Duro Canyon SP
+    lat: 34.9375
+    lon: -101.69
+    kind: sp
+  - id: l2
+    label: Denver · Golden Gate Canyon SP
+    lat: 39.8347
+    lon: -105.403
+    kind: sp
+  - id: l4
+    label: Rocky Mountain NP · Trail Ridge Rd
+    lat: 40.4419
+    lon: -105.755
+    kind: np
+  - id: l5
+    label: Grand Lake, CO
+    lat: 40.2503
+    lon: -105.823
+    kind: np
+  - id: l6
+    label: Bridger-Teton NF · Jackson
+    lat: 43.4799
+    lon: -110.762
+    kind: nf
+  - id: l7
+    label: Grand Teton NP · Jenny Lake
+    lat: 43.7517
+    lon: -110.722
+    kind: np
+  - id: l8
+    label: Yellowstone NP
+    lat: 44.4605
+    lon: -110.828
+    kind: np
+  - id: l10
+    label: Bozeman, MT
+    lat: 45.677
+    lon: -111.043
+    kind: city
+  - id: l11
+    label: Missoula, MT
+    lat: 46.8721
+    lon: -113.994
+    kind: fork
+  - id: b1
+    label: Glacier NP · Logan Pass
+    lat: 48.6963
+    lon: -113.718
+    kind: np
+  - id: l12
+    label: Spokane · Farragut SP
+    lat: 47.949
+    lon: -116.59
+    kind: sp
+  - id: l13
+    label: Seattle, WA
+    lat: 47.6062
+    lon: -122.332
+    kind: end
+chargers:
+  - name: Coeur d'Alene, ID
+    lat: 47.7089
+    lon: -116.794
+    stalls: 14
+    kw: 250
+  - name: Kalispell, MT
+    lat: 48.2414
+    lon: -114.327
+    stalls: 8
+    kw: 325
+  - name: Missoula, MT
+    lat: 46.9144
+    lon: -114.032
+    stalls: 6
+    kw: 150
+  - name: Kellogg, ID
+    lat: 47.547
+    lon: -116.132
+    stalls: 8
+    kw: 500
+  - name: Missoula, MT - Hwy 93 N
+    lat: 46.9542
+    lon: -114.132
+    stalls: 12
+    kw: 250
+  - name: St. Regis, MT
+    lat: 47.2989
+    lon: -115.099
+    stalls: 12
+    kw: 250
+  - name: Superior, MT
+    lat: 47.1921
+    lon: -114.889
+    stalls: 4
+    kw: 150
+  - name: Bellevue, WA
+    lat: 47.6107
+    lon: -122.202
+    stalls: 8
+    kw: 72
+  - name: Bellevue, WA - NE 8th St
+    lat: 47.6177
+    lon: -122.197
+    stalls: 8
+    kw: 325
+  - name: Cle Elum, WA - W Davis St
+    lat: 47.1953
+    lon: -120.956
+    stalls: 8
+    kw: 250
+  - name: Cle Elum, WA
+    lat: 47.1893
+    lon: -120.903
+    stalls: 12
+    kw: 150
+  - name: Ellensburg, WA - S Water St
+    lat: 46.9907
+    lon: -120.55
+    stalls: 16
+    kw: 325
+  - name: Ellensburg, WA
+    lat: 46.9769
+    lon: -120.542
+    stalls: 5
+    kw: 120
+  - name: Ellensburg, WA - Canyon Rd
+    lat: 46.978
+    lon: -120.543
+    stalls: 12
+    kw: 250
+  - name: George, WA
+    lat: 47.0811
+    lon: -119.862
+    stalls: 12
+    kw: 250
+  - name: Issaquah, WA - NW Gilman Blvd
+    lat: 47.5432
+    lon: -122.048
+    stalls: 16
+    kw: 325
+  - name: Issaquah, WA - Klahanie Dr SE
+    lat: 47.5649
+    lon: -122.003
+    stalls: 12
+    kw: 325
+  - name: Issaquah, WA
+    lat: 47.548
+    lon: -122.04
+    stalls: 8
+    kw: 72
+  - name: Kirkland, WA
+    lat: 47.7092
+    lon: -122.184
+    stalls: 12
+    kw: 250
+  - name: Liberty Lake (SC), WA
+    lat: 47.6733
+    lon: -117.114
+    stalls: 12
+    kw: 250
+  - name: Moses Lake, WA
+    lat: 47.1035
+    lon: -119.31
+    stalls: 12
+    kw: 250
+  - name: North Bend, WA - S Fork Ave SW
+    lat: 47.4908
+    lon: -121.796
+    stalls: 24
+    kw: 325
+  - name: North Bend, WA
+    lat: 47.4681
+    lon: -121.716
+    stalls: 8
+    kw: 250
+  - name: Quincy, WA
+    lat: 47.1034
+    lon: -119.834
+    stalls: 8
+    kw: 250
+  - name: Redmond, WA
+    lat: 47.6286
+    lon: -122.141
+    stalls: 8
+    kw: 325
+  - name: Renton, WA - SW 41st St
+    lat: 47.4431
+    lon: -122.225
+    stalls: 16
+    kw: 250
+  - name: Sammamish, WA - Issaquah-Pine Lake Rd SE
+    lat: 47.582
+    lon: -122.034
+    stalls: 8
+    kw: 325
+  - name: Sammamish, WA
+    lat: 47.6163
+    lon: -122.033
+    stalls: 8
+    kw: 250
+  - name: Seattle, WA - NE Northgate Way
+    lat: 47.706
+    lon: -122.327
+    stalls: 16
+    kw: 250
+  - name: Seattle, WA - Meridian Ave N
+    lat: 47.7069
+    lon: -122.334
+    stalls: 12
+    kw: 325
+  - name: Seattle, WA - Union St
+    lat: 47.6097
+    lon: -122.332
+    stalls: 10
+    kw: 72
+  - name: Seattle, WA - 1201 2nd Avenue
+    lat: 47.6067
+    lon: -122.337
+    stalls: 4
+    kw: 72
+  - name: Seattle, WA - NW Ballard Way
+    lat: 47.6626
+    lon: -122.375
+    stalls: 8
+    kw: 150
+  - name: Seattle, WA
+    lat: 47.6611
+    lon: -122.37
+    stalls: 12
+    kw: 325
+  - name: Shoreline, WA
+    lat: 47.7558
+    lon: -122.344
+    stalls: 12
+    kw: 325
+  - name: Spokane, WA
+    lat: 47.5905
+    lon: -117.562
+    stalls: 8
+    kw: 250
+  - name: Tukwila, WA - Southcenter Pkwy
+    lat: 47.4474
+    lon: -122.264
+    stalls: 16
+    kw: 250
+  - name: Tukwila, WA - Strander Blvd
+    lat: 47.4553
+    lon: -122.257
+    stalls: 16
+    kw: 250
+  - name: Arvada, CO
+    lat: 39.7975
+    lon: -105.079
+    stalls: 12
+    kw: 325
+  - name: Aurora, CO - E Mississippi Ave
+    lat: 39.6971
+    lon: -104.826
+    stalls: 16
+    kw: 325
+  - name: Aurora, CO
+    lat: 39.6666
+    lon: -104.863
+    stalls: 16
+    kw: 325
+  - name: Boulder, CO - 28th St
+    lat: 40.0316
+    lon: -105.257
+    stalls: 8
+    kw: 250
+  - name: Boulder, CO
+    lat: 40.0203
+    lon: -105.257
+    stalls: 10
+    kw: 150
+  - name: Castle Rock, CO
+    lat: 39.408
+    lon: -104.863
+    stalls: 16
+    kw: 325
+  - name: Colorado Springs, CO - Forest Bluffs View
+    lat: 38.9657
+    lon: -104.785
+    stalls: 16
+    kw: 250
+  - name: Colorado Springs, CO - E Tyler St
+    lat: 38.871
+    lon: -104.822
+    stalls: 12
+    kw: 325
+  - name: Colorado Springs, CO
+    lat: 38.8376
+    lon: -104.825
+    stalls: 8
+    kw: 150
+  - name: Denver, CO
+    lat: 39.7751
+    lon: -104.795
+    stalls: 6
+    kw: 150
+  - name: Denver, CO - Pontiac St
+    lat: 39.7179
+    lon: -104.906
+    stalls: 16
+    kw: 250
+  - name: Denver, CO - E 45th Ave
+    lat: 39.7783
+    lon: -104.848
+    stalls: 8
+    kw: 250
+  - name: Edgewater, CO
+    lat: 39.7482
+    lon: -105.058
+    stalls: 8
+    kw: 250
+  - name: Centennial, CO
+    lat: 39.5672
+    lon: -104.878
+    stalls: 12
+    kw: 250
+  - name: Estes Park, CO
+    lat: 40.3838
+    lon: -105.52
+    stalls: 7
+    kw: 150
+  - name: "[HiON EV] Greenwood Village, CO - E Orchard Blvd"
+    lat: 39.6092
+    lon: -104.902
+    stalls: 4
+    kw: 325
+  - name: Greenwood Village, CO
+    lat: 39.592
+    lon: -104.878
+    stalls: 12
+    kw: 325
+  - name: Highlands Ranch, CO
+    lat: 39.5481
+    lon: -105.005
+    stalls: 16
+    kw: 325
+  - name: Lakewood, CO
+    lat: 39.7337
+    lon: -105.154
+    stalls: 16
+    kw: 250
+  - name: Lakewood, CO - S Wadsworth Blvd
+    lat: 39.6185
+    lon: -105.092
+    stalls: 12
+    kw: 250
+  - name: Lakewood, CO - W Alaska Dr
+    lat: 39.71
+    lon: -105.075
+    stalls: 12
+    kw: 325
+  - name: Lone Tree, CO - Park Meadows Center Drive
+    lat: 39.5627
+    lon: -104.873
+    stalls: 10
+    kw: 150
+  - name: Longmont, CO
+    lat: 40.1531
+    lon: -105.107
+    stalls: 12
+    kw: 325
+  - name: Monument, CO
+    lat: 39.0923
+    lon: -104.853
+    stalls: 8
+    kw: 250
+  - name: Northglenn, CO
+    lat: 39.8894
+    lon: -104.99
+    stalls: 16
+    kw: 250
+  - name: Pueblo, CO
+    lat: 38.2672
+    lon: -104.61
+    stalls: 12
+    kw: 250
+  - name: Superior, CO - S Marshall Rd
+    lat: 39.9548
+    lon: -105.165
+    stalls: 16
+    kw: 250
+  - name: Thornton, CO
+    lat: 39.9147
+    lon: -104.987
+    stalls: 8
+    kw: 250
+  - name: Trinidad, CO
+    lat: 37.1341
+    lon: -104.519
+    stalls: 9
+    kw: 250
+  - name: Westminster, CO
+    lat: 39.8321
+    lon: -105.024
+    stalls: 8
+    kw: 250
+  - name: Belgrade, MT
+    lat: 45.7732
+    lon: -111.199
+    stalls: 8
+    kw: 250
+  - name: Bozeman, MT
+    lat: 45.7
+    lon: -111.063
+    stalls: 4
+    kw: 150
+  - name: Butte, MT - Grizzly Trl
+    lat: 46.0052
+    lon: -112.611
+    stalls: 8
+    kw: 250
+  - name: Butte, MT
+    lat: 45.9812
+    lon: -112.507
+    stalls: 6
+    kw: 150
+  - name: Deer Lodge, MT
+    lat: 46.4126
+    lon: -112.725
+    stalls: 8
+    kw: 500
+  - name: Big Sky, MT
+    lat: 45.2608
+    lon: -111.306
+    stalls: 8
+    kw: 150
+  - name: West Yellowstone, MT
+    lat: 44.656
+    lon: -111.099
+    stalls: 8
+    kw: 150
+  - name: Clayton, NM
+    lat: 36.4495
+    lon: -103.182
+    stalls: 8
+    kw: 250
+  - name: Raton, NM
+    lat: 36.8802
+    lon: -104.439
+    stalls: 12
+    kw: 325
+  - name: Abilene, TX
+    lat: 32.4062
+    lon: -99.7668
+    stalls: 12
+    kw: 325
+  - name: Amarillo, TX - E Interstate 40
+    lat: 35.1933
+    lon: -101.745
+    stalls: 12
+    kw: 250
+  - name: Amarillo, TX - I-40
+    lat: 35.1918
+    lon: -101.722
+    stalls: 20
+    kw: 325
+  - name: Amarillo, TX
+    lat: 35.189
+    lon: -101.931
+    stalls: 8
+    kw: 150
+  - name: Amarillo, TX - River Rd
+    lat: 35.2646
+    lon: -101.831
+    stalls: 12
+    kw: 325
+  - name: Austin, TX - Spirit of Texas Dr
+    lat: 30.2105
+    lon: -97.6666
+    stalls: 20
+    kw: 325
+  - name: Austin, TX - S Congress Ave
+    lat: 30.2477
+    lon: -97.7501
+    stalls: 8
+    kw: 250
+  - name: Austin, TX - Frontage Rd
+    lat: 30.1629
+    lon: -97.7921
+    stalls: 12
+    kw: 250
+  - name: Austin, TX - 5601 Brodie Ln
+    lat: 30.2262
+    lon: -97.822
+    stalls: 8
+    kw: 250
+  - name: Austin, TX - Research Blvd
+    lat: 30.3893
+    lon: -97.7397
+    stalls: 18
+    kw: 72
+  - name: Austin, TX - N Mopac Expy
+    lat: 30.3904
+    lon: -97.733
+    stalls: 24
+    kw: 325
+  - name: Austin, TX - E 41st St
+    lat: 30.2987
+    lon: -97.7196
+    stalls: 16
+    kw: 325
+  - name: Austin, TX
+    lat: 30.3293
+    lon: -97.7063
+    stalls: 8
+    kw: 150
+  - name: Austin, TX - Century Oaks Terrace
+    lat: 30.4025
+    lon: -97.7247
+    stalls: 16
+    kw: 72
+  - name: Austin, TX - S Lamar Blvd
+    lat: 30.2334
+    lon: -97.7929
+    stalls: 12
+    kw: 250
+  - name: Austin, TX - FM 969
+    lat: 30.2548
+    lon: -97.6051
+    stalls: 12
+    kw: 250
+  - name: Austin, TX - W Canyon Ridge Dr
+    lat: 30.4036
+    lon: -97.6733
+    stalls: 16
+    kw: 250
+  - name: Austin, TX - E Ben White Blvd
+    lat: 30.2149
+    lon: -97.7421
+    stalls: 16
+    kw: 250
+  - name: Austin, TX - E Stassney Ln
+    lat: 30.2001
+    lon: -97.7672
+    stalls: 16
+    kw: 250
+  - name: Austin, TX - W Slaughter Ln
+    lat: 30.2023
+    lon: -97.876
+    stalls: 8
+    kw: 325
+  - name: Bee Cave, TX
+    lat: 30.3037
+    lon: -97.9418
+    stalls: 8
+    kw: 250
+  - name: Cedar Park, TX
+    lat: 30.5257
+    lon: -97.8194
+    stalls: 12
+    kw: 250
+  - name: Cedar Park, TX - E Whitestone Blvd
+    lat: 30.5338
+    lon: -97.7843
+    stalls: 11
+    kw: 325
+  - name: Clyde, TX
+    lat: 32.4174
+    lon: -99.5266
+    stalls: 20
+    kw: 250
+  - name: Del Valle, TX
+    lat: 30.1724
+    lon: -97.6304
+    stalls: 8
+    kw: 250
+  - name: Lubbock (SC), TX
+    lat: 33.5209
+    lon: -101.962
+    stalls: 4
+    kw: 250
+  - name: Lubbock, TX - University Ave
+    lat: 33.5277
+    lon: -101.871
+    stalls: 16
+    kw: 325
+  - name: Plainview, TX
+    lat: 34.1888
+    lon: -101.749
+    stalls: 8
+    kw: 250
+  - name: Post, TX
+    lat: 33.2001
+    lon: -101.383
+    stalls: 8
+    kw: 250
+  - name: Round Rock, TX
+    lat: 30.5097
+    lon: -97.6877
+    stalls: 16
+    kw: 250
+  - name: Round Rock, TX - University Blvd
+    lat: 30.5623
+    lon: -97.6897
+    stalls: 20
+    kw: 325
+  - name: West Lake Hills, TX
+    lat: 30.2898
+    lon: -97.8275
+    stalls: 8
+    kw: 250
+  - name: Jackson, WY
+    lat: 43.4639
+    lon: -110.795
+    stalls: 8
+    kw: 150
+  - name: Rawlins, WY
+    lat: 41.7908
+    lon: -107.21
+    stalls: 8
+    kw: 150
+chargerGaps:
+  - miles: 249.2
+    from: Rawlins, WY
+    to: Jackson, WY
+  - miles: 166.1
+    from: Cedar Park, TX - E Whitestone Blvd
+    to: Clyde, TX
+  - miles: 155.9
+    from: Estes Park, CO
+    to: Rawlins, WY
+  - miles: 141.2
+    from: Jackson, WY
+    to: West Yellowstone, MT
+  - miles: 112.4
+    from: Amarillo, TX - River Rd
+    to: Clayton, NM
+  - miles: 109.6
+    from: Abilene, TX
+    to: Post, TX
+  - miles: 88.2
+    from: Spokane, WA
+    to: Moses Lake, WA
+  - miles: 78.2
+    from: Trinidad, CO
+    to: Pueblo, CO
+  - miles: 76.5
+    from: Deer Lodge, MT
+    to: Missoula, MT - Hwy 93 N
+  - miles: 75.7
+    from: Clayton, NM
+    to: Raton, NM
+  - miles: 69
+    from: Plainview, TX
+    to: Amarillo, TX
+  - miles: 64.4
+    from: Belgrade, MT
+    to: Butte, MT
+content:
+  callouts:
+    - tone: clay
+      title: Where the climbs cost the most range
+      paragraphs:
+        - Two climbs dominate the trip. <b>Trail Ridge Road</b> runs from Estes
+          Park (7,522 ft) to the Alpine Visitor Center (12,183 ft), a 4,661 ft
+          gain in 25 miles. <b>Logan Pass</b>, on the branch, climbs from
+          Missoula (3,209 ft) to 6,646 ft. Both are short enough that the range
+          cost stays manageable. The descent that follows is the bigger planning
+          risk. Regen won't refill what the climb spent, so leave more buffer
+          than the raw mileage suggests on the way down.
+    - tone: alpine
+      title: "National park vs. national forest: where dogs can walk"
+      paragraphs:
+        - "Every full national park on this route bans dogs from trails and
+          boardwalks: Rocky Mountain, Grand Teton, Yellowstone, and Glacier.
+          Leashed pets are allowed only in campgrounds, parking areas, and
+          within about 100 ft of roads. The national forest and state park
+          stretches are the opposite. At Palo Duro Canyon, Golden Gate Canyon,
+          and Bridger-Teton, leashed dogs are welcome on nearly every trail.
+          Plan trail hikes for the gaps between parks, and treat the parks
+          themselves as scenic-drive and campground days for the dog."
+    - tone: alpine
+      title: No single pass covers the whole route
+      paragraphs:
+        - The <b>America the Beautiful</b> annual pass costs $80. It covers
+          entrance at all four national parks on this line, plus standard
+          day-use fees on federal land like the Bridger-Teton stretch. It does
+          not cover state parks. Texas, Colorado, and Idaho each run their own
+          gate, and their annual passes would total $230 to pass through once
+          each.
+        - Buy the federal pass, pay the three state parks at the gate. Rocky
+          Mountain, Grand Teton, and Yellowstone alone come to $105 at the gate.
+          The pass pays for itself at the third park, and this route has at
+          least three.
+    - tone: clay
+      title: Reservations you need on top of a pass
+      paragraphs:
+        - <b>Rocky Mountain</b> runs a timed-entry system from late May to
+          mid-October. It applies 9am to 2pm for most of the park, and 5am to
+          6pm on the Bear Lake Road corridor. A reservation costs a $2
+          Recreation.gov processing fee and does not replace the entrance fee.
+          Entering outside those hours needs no reservation.
+        - <b>Glacier</b> required a vehicle reservation for Going-to-the-Sun
+          Road in past summers. The park says none is required anywhere in 2026.
+          Check again before a 2027 trip; this has changed year to year.
+  checklist:
+    - title: Campsites
+      items:
+        - Jenny Lake &amp; Colter Bay (Teton) and Canyon/Grant Village
+          (Yellowstone) release on Recreation.gov 6 months out to the day. Set
+          an alarm.
+        - Timber Creek (RMNP west side) is first-come outside peak booking
+          windows; Moraine Park books out fast in July.
+        - Apgar &amp; Fish Creek (Glacier) also run a 6-month Recreation.gov
+          window in summer.
+    - title: Permits &amp; passes
+      items:
+        - America the Beautiful, $80, covers all four national parks and pays
+          for itself at the third one. See Passes and fees above.
+        - RMNP timed-entry permits run late May to mid-October and cost a $2
+          processing fee on top of entry.
+        - Glacier needed no vehicle reservation in 2026, after several summers
+          of requiring one. Re-check before you book.
+    - title: Charging
+      items:
+        - NACS-native Gravity reaches Tesla Superchargers along I-40, I-25, and
+          I-90 without an adapter.
+        - Coverage thins between Jackson and Yellowstone and again around
+          Glacier. Top up to 100% before both stretches, not the usual 80%.
+        - Cold mountain nights (Trail Ridge, Logan Pass, Yellowstone shoulder
+          season) cut range further than this calculator's climb math alone.
+          Precondition the battery before departing camp.
+    - title: For the dog
+      items:
+        - Carry proof of rabies vaccination. Yellowstone and Glacier rangers
+          check leash and pet-in-vehicle rules.
+        - Never leave a dog in the car at altitude trailheads, even briefly.
+          Thin air and sun make cars overheat faster than expected.
+        - Bridger-Teton NF (between Rawlins and Jackson) is the longest mid-trip
+          stretch where dogs are allowed on trails.
+  fees:
+    - stop: Palo Duro Canyon SP, TX
+      fee: $8 per adult per day / 12 and under free
+      covered: false
+      coverLabel: Not covered
+      url: https://tpwd.texas.gov/state-parks/park-information/passes
+      linkLabel: Texas parks pass, $70
+    - stop: Golden Gate Canyon SP, CO
+      fee: $15–17 per vehicle per day
+      covered: false
+      coverLabel: Not covered
+      url: https://www.cpwshop.com/privilegepos.page
+      linkLabel: Colorado passes, $80/yr
+    - stop: Rocky Mountain NP
+      fee: $35 per vehicle, 7 days / $70 park annual
+      covered: true
+      coverLabel: Covered
+      url: https://www.nps.gov/romo/planyourvisit/fees.htm
+      linkLabel: Park fees
+    - stop: Bridger-Teton NF
+      fee: No entrance fee
+      covered: true
+      coverLabel: Day-use covered
+      url: https://www.fs.usda.gov/btnf
+      linkLabel: Forest info
+    - stop: Grand Teton NP
+      fee: $35 per vehicle, 7 days / $70 park annual
+      covered: true
+      coverLabel: Covered
+      url: https://www.nps.gov/grte/planyourvisit/fees.htm
+      linkLabel: Park fees
+    - stop: Yellowstone NP
+      fee: $35 per vehicle, 7 days / $70 park annual
+      covered: true
+      coverLabel: Covered
+      url: https://www.nps.gov/yell/planyourvisit/fees.htm
+      linkLabel: Park fees
+    - stop: Glacier NP <span style="color:var(--alpine)">(branch)</span>
+      fee: $35 per vehicle, 7 days / $25 Nov 1–Apr 30
+      covered: true
+      coverLabel: Covered
+      url: https://www.nps.gov/glac/planyourvisit/fees.htm
+      linkLabel: Park fees
+    - stop: Farragut SP, ID
+      fee: $7 per vehicle per day / $80 annual
+      covered: false
+      coverLabel: Not covered
+      url: https://parksandrecreation.idaho.gov/parks/farragut/
+      linkLabel: Park info
+  seasonWindows:
+    - name: Trail Ridge Rd
+      detail: 12,183 ft summit
+      leftPct: 41.6
+      widthPct: 38
+    - name: Going-to-the-Sun Rd
+      detail: Glacier NP, if taken
+      leftPct: 45.8
+      widthPct: 24
+  sourcesAndCaveats:
+    - Distances, elevations, and drive times are planning estimates from public
+      road and park data, not a live routing service. Confirm exact mileage,
+      closures, and charger status before you lock dates.
+    - Elevation-based range figures use the vehicle assumptions above and a
+      simplified physics model; real-world range also depends on temperature,
+      speed, wind, and payload.
+    - Weather is 1991–2020 monthly climate normals from the nearest long-record
+      station, not a forecast. Road opening dates are typical seasons; plowing
+      progress sets the actual day each alpine road opens.
+  howComputed:
+    - <b>How range is computed:</b> consumption comes from the road-load
+      equation, <span class="mono">F = Crr·m·g + ½·ρ·Cd·A·v²</span>. Rolling
+      resistance rises with the load you carry; drag rises with the square of
+      your speed. The model is calibrated against Lucid's 450-mile EPA figure.
+      That is treated as what the default 620 lb load draws at 65 mph, or
+      249&nbsp;Wh/mi, and everything scales from there. It assumes a 0.008
+      rolling coefficient, Lucid's published 0.24 drag coefficient, and an
+      estimated 2.7&nbsp;m² frontal area. Move the load or speed slider and the
+      range, the Wh/mi, and every leg's climb cost all follow. The reserve
+      slider sets the charge you refuse to go below. Usable range is what is
+      left above it, and the planned charging interval is capped there no matter
+      where the miles slider sits. Supercharger positions come from the
+      supercharge.info database, filtered to sites within 12 miles of this
+      route. The gap warning measures the real distance between consecutive
+      sites.<br><b>How the climb tax is computed:</b> lifting the loaded car
+      costs <span class="mono">energy = mass × g × Δheight</span>, divided by
+      drivetrain efficiency. That energy is then converted into miles at
+      whatever the car is drawing per mile right now, so the tax in miles falls
+      as the cost per mile rises. Climbing legs apply an 88% drivetrain
+      efficiency (extra draw); descending legs apply a 65% regen-recovery rate
+      (partial refund) — batteries never return 100% of what gravity gave them.
+      At current settings that works out to about <span class="mono"
+      id="fmlClimb">12.5 mi</span> spent per 1,000&nbsp;ft climbed and <span
+      class="mono" id="fmlDescent">7.2 mi</span> recovered per 1,000&nbsp;ft
+      descended.
+    - <b>How the dates are computed:</b> the schedule walks the route leg by
+      leg. A driving day caps at 7.5 hours behind the wheel, and each park or
+      camp stop holds you for the number of nights set above. Leg times scale
+      with the speed setting from a 65 mph baseline, so park and mountain roads
+      stay proportionally slower than the interstate stretches. Set either date
+      and the other moves with it. Weather figures are 1991–2020 monthly normals
+      from the nearest long-record station, named on each stop.

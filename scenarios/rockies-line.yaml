@@ -346,7 +346,7 @@ finalLegs:
       - label: Trails (AllTrails)
         url: https://www.alltrails.com/parks/us/idaho/farragut-state-park
       - label: Reserve campsite
-        url: http://getoutside.idaho.gov/Farragut
+        url: https://getoutside.idaho.gov/Farragut
         reserve: true
   - id: l13
     from: Spokane, WA
@@ -425,7 +425,7 @@ branchLegs:
       - label: Trails (AllTrails)
         url: https://www.alltrails.com/parks/us/idaho/farragut-state-park
       - label: Reserve campsite
-        url: http://getoutside.idaho.gov/Farragut
+        url: https://getoutside.idaho.gov/Farragut
         reserve: true
   - id: l13g
     from: Spokane, WA

@@ -2,8 +2,12 @@
 
 import Link from 'next/link';
 import type { Scenario } from '@/lib/types';
+import dynamic from 'next/dynamic';
 import { StatBar } from './StatBar';
 import { StopList } from './StopList';
+
+// Mapbox GL touches window at import time, so it stays out of the server bundle.
+const MapView = dynamic(() => import('./MapView').then((m) => m.MapView), { ssr: false });
 import { TripSettingsPanel } from './TripSettingsPanel';
 import { useTrip } from './useTrip';
 
@@ -36,6 +40,8 @@ export function ScenarioView({ scenario }: { scenario: Scenario }) {
         <span className="tag">everything below reacts to these</span>
       </div>
       <TripSettingsPanel scenario={scenario} trip={trip} />
+
+      <MapView scenario={scenario} trip={trip} />
 
       <div className="section-head">
         <h2>The parks, in order</h2>

@@ -72,6 +72,13 @@ legs:
       - label: Reserve campsite
         url: https://texasstateparks.reserveamerica.com/camping/palo-duro-canyon-state-park/r/facilityDetails.do?contractCode=TX&parkId=1200105
         reserve: true
+    hero:
+      src: /images/hero/l1.jpg
+      width: 1400
+      height: 600
+      credit: Gail Frederick
+      license: CC BY 2.0
+      sourceUrl: https://commons.wikimedia.org/wiki/File:Palo_Duro_Canyon_State_Park_-_28709059107.jpg
   - id: l2
     from: Amarillo, TX
     to: Denver, CO
@@ -101,6 +108,13 @@ legs:
       - label: Reserve campsite
         url: https://www.cpwshop.com/camping/golden-gate-canyon-state-park/r/campgroundDetails.page?parkID=50025
         reserve: true
+    hero:
+      src: /images/hero/l2.jpg
+      width: 1400
+      height: 600
+      credit: Wildernest42
+      license: CC BY-SA 4.0
+      sourceUrl: https://commons.wikimedia.org/wiki/File:Golden_Gate_Aspen_Oct_16.jpg
   - id: l3
     from: Denver, CO
     to: Estes Park, CO
@@ -119,6 +133,13 @@ legs:
       note: Downtown and the surrounding forest are dog-friendly. The restrictions
         start at the entrance station.
     station: estes
+    hero:
+      src: /images/hero/l3.jpg
+      width: 1400
+      height: 600
+      credit: Frank Schulenburg
+      license: CC BY-SA 4.0
+      sourceUrl: https://commons.wikimedia.org/wiki/File:Moraine_Park_Valley,_Rocky_Mountain_National_Park.jpg
   - id: l4
     from: Estes Park, CO
     to: Alpine Visitor Center
@@ -150,6 +171,13 @@ legs:
         url: https://www.nps.gov/romo/planyourvisit/road_status.htm
       - label: Timed-entry permits
         url: https://www.nps.gov/romo/planyourvisit/timed-entry-permit-system.htm
+    hero:
+      src: /images/hero/l4.jpg
+      width: 1400
+      height: 600
+      credit: Anne Dirkse
+      license: CC BY-SA 4.0
+      sourceUrl: https://commons.wikimedia.org/wiki/File:Trail_Ridge_Road_above_Treeline,_Rocky_Mountain_National_Park.jpg
   - id: l5
     from: Alpine Visitor Center
     to: Grand Lake, CO
@@ -173,6 +201,13 @@ legs:
       - label: Reserve campsite
         url: https://www.recreation.gov/search?q=Timber%20Creek%20Campground
         reserve: true
+    hero:
+      src: /images/hero/l5.jpg
+      width: 1400
+      height: 600
+      credit: Unknown
+      license: Public domain
+      sourceUrl: https://commons.wikimedia.org/wiki/File:Town_of_Grand_Lake_CO.jpg
   - id: l6
     from: Grand Lake, CO
     to: Jackson, WY
@@ -203,6 +238,13 @@ legs:
       - label: Reserve campsite
         url: https://www.recreation.gov/search?q=Gros%20Ventre%20Campground
         reserve: true
+    hero:
+      src: /images/hero/l6.jpg
+      width: 1400
+      height: 600
+      credit: Daniel Mayer
+      license: CC BY-SA 3.0
+      sourceUrl: https://commons.wikimedia.org/wiki/File:Gros_Ventre_River.jpg
   - id: l7
     from: Jackson, WY
     to: Jenny Lake, WY
@@ -236,6 +278,13 @@ legs:
       - label: Reserve Colter Bay CG
         url: https://www.recreation.gov/search?q=Colter%20Bay%20Campground
         reserve: true
+    hero:
+      src: /images/hero/l7.jpg
+      width: 1400
+      height: 600
+      credit: InSapphoWeTrust from Los Angeles, California, USA
+      license: CC BY-SA 2.0
+      sourceUrl: https://commons.wikimedia.org/wiki/File:Jenny_Lake,_Grand_Teton_National_Park_(7712240842).jpg
   - id: l8
     from: Jenny Lake, WY
     to: Canyon Village, WY
@@ -267,6 +316,13 @@ legs:
       - label: Reserve campsite
         url: https://secure.yellowstonenationalparklodges.com/booking/lodging
         reserve: true
+    hero:
+      src: /images/hero/l8.jpg
+      width: 1400
+      height: 600
+      credit: Erik Whalen
+      license: CC BY-SA 4.0
+      sourceUrl: https://commons.wikimedia.org/wiki/File:Grand_Canyon_of_Yellowstone_and_Lower_falls,_Wyoming,_United_States.jpg
   - id: l9
     from: Canyon Village, WY
     to: West Yellowstone, MT
@@ -284,6 +340,13 @@ legs:
       level: good
       note: Town and nearby Gallatin NF trails are leash-friendly.
     station: westyell
+    hero:
+      src: /images/hero/l9.jpg
+      width: 1400
+      height: 600
+      credit: Yellowstone National Park
+      license: Public domain
+      sourceUrl: https://commons.wikimedia.org/wiki/File:National_Park_Mountain_and_Madison_River_(35607685081).jpg
   - id: l10
     from: West Yellowstone, MT
     to: Bozeman, MT
@@ -301,6 +364,13 @@ legs:
       level: good
       note: Several off-leash city parks if the dog needs to run.
     station: bozeman
+    hero:
+      src: /images/hero/l10.jpg
+      width: 1400
+      height: 600
+      credit: Tim Evanson
+      license: CC BY-SA 2.0
+      sourceUrl: https://commons.wikimedia.org/wiki/File:000_block_of_S_Tracy_Avenue_-_Bozeman_Montana_-_2013-07-09.jpg
   - id: l11
     from: Bozeman, MT
     to: Missoula, MT
@@ -319,6 +389,13 @@ legs:
       level: good
       note: City is dog-friendly.
     station: missoula
+    hero:
+      src: /images/hero/l11.jpg
+      width: 1400
+      height: 600
+      credit: Jstuby
+      license: CC0
+      sourceUrl: https://commons.wikimedia.org/wiki/File:Missoula_Montana_20210630.jpg
 finalLegs:
   - id: l12
     from: Missoula, MT
@@ -348,6 +425,13 @@ finalLegs:
       - label: Reserve campsite
         url: https://getoutside.idaho.gov/Farragut
         reserve: true
+    hero:
+      src: /images/hero/l12.jpg
+      width: 1400
+      height: 600
+      credit: SounderBruce
+      license: CC BY-SA 4.0
+      sourceUrl: https://commons.wikimedia.org/wiki/File:Spokane_skyline_from_Edwidge_Woldson_Park_(Aug_2019).jpg
   - id: l13
     from: Spokane, WA
     to: Seattle, WA
@@ -365,6 +449,13 @@ finalLegs:
       level: good
       note: Trip complete.
     station: seattle
+    hero:
+      src: /images/hero/l13.jpg
+      width: 1400
+      height: 600
+      credit: Daniel Schwen
+      license: CC BY-SA 4.0
+      sourceUrl: https://commons.wikimedia.org/wiki/File:Seattle_4.jpg
 branchLegs:
   - id: b1
     from: Missoula, MT

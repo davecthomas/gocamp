@@ -1,3 +1,5 @@
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { CLIMATE } from '../lib/data/climate';
 import { getAllScenarios } from '../lib/scenarios';
@@ -105,6 +107,22 @@ describe('scenario data integrity', () => {
 
       it('starts its default date inside the open season of every road it uses', () => {
         expect(scenario.defaults.startDate).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      });
+
+      it('gives every hero photo a credit, a licence we can honour, and a real file', () => {
+        // Licences that permit reuse provided the credit travels with the image.
+        const reusable = /^(CC BY|CC BY-SA|CC0|Public domain)/i;
+        for (const leg of allLegs) {
+          if (!leg.hero) continue;
+          expect(leg.hero.credit, `${leg.id} credit`).toBeTruthy();
+          expect(leg.hero.license, `${leg.id} licence`).toMatch(reusable);
+          expect(leg.hero.sourceUrl, `${leg.id} source`).toMatch(/^https:\/\//);
+          expect(leg.hero.src, `${leg.id} src`).toMatch(/^\/images\/hero\//);
+          expect(
+            existsSync(join(process.cwd(), 'public', leg.hero.src)),
+            `${leg.id}: ${leg.hero.src} is missing from public/`,
+          ).toBe(true);
+        }
       });
 
       it('carries the prose the page renders', () => {

@@ -21,3 +21,10 @@
 **Commit:** 2b8a5fa
 **Source:** commit-capture
 
+## 2026-09-06T19:23Z · davecthomas · feature/hero-shots
+
+**Decision:** Add a hero photo to every stop
+**Why:** Each of the 13 stops gets a landscape photo of the place it actually is: Palo Duro Canyon, Golden Gate Canyon aspen, Moraine Park, Trail Ridge Road above treeline, Grand Lake, the Gros Ventre River, Jenny Lake, the Lower Falls, the Madison River, Bozeman, Missoula, the Spokane skyline and Seattle. Sourced from Wikimedia Commons, restricted to licences that permit reuse with attribution (CC BY, CC BY-SA, CC0, public domain). The photographer, the licence and a link to the source page come back from the same API response that supplied the file, are stored on the leg in the scenario YAML, and are rendered over the image. Nothing is used whose licence could not be read programmatically. Images are self-hosted rather than hotlinked, standardised to a 1400x600 band and re-encoded, which is both a consistent card layout and 3.3 MB for all thirteen. A test asserts every hero has a credit, a licence on the permitted list, an https source, and a file that actually exists in public/.
+**Commit:** 8c94a25
+**Source:** commit-capture
+

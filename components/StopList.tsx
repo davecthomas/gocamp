@@ -62,6 +62,27 @@ export function StopList({ scenario, trip }: { scenario: Scenario; trip: TripSta
               {markerFor(leg)}
             </div>
             <div className="card" data-leg={leg.id}>
+              {leg.hero && (
+                <figure className="hero">
+                  {/* Plain img: these are pre-sized local files, so there is nothing
+                      for the optimiser to do and no remote host to configure. */}
+                  <img
+                    src={leg.hero.src}
+                    width={leg.hero.width}
+                    height={leg.hero.height}
+                    alt={leg.title}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <figcaption>
+                    <a href={leg.hero.sourceUrl} target="_blank" rel="noopener">
+                      {leg.hero.credit}
+                    </a>
+                    {' · '}
+                    {leg.hero.license}
+                  </figcaption>
+                </figure>
+              )}
               <div className="card-top">
                 <div>
                   <h3>{leg.title}</h3>

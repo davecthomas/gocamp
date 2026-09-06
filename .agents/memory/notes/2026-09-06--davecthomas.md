@@ -28,3 +28,23 @@
 **Commit:** 8c94a25
 **Source:** commit-capture
 
+## 2026-09-06T21:04Z · davecthomas · main
+
+**Decision:** Rewrite TileJSON bodies in the Mapbox proxy, and make every proxied URL absolute in a follow-up.
+**Why:** Mapbox writes the account token into every entry of a TileJSON 'tiles' array, so streaming JSON through untouched handed the public browser the exact pk.* credential ADR-0001 exists to hide. Those same URLs were plaintext http on a/b.tiles.mapbox.com, which an https page blocks as mixed content and which transformRequest did not treat as a Mapbox host, so no base tile ever loaded and the map showed route and chargers over an empty frame. The route now rewrites tile templates to point at the proxy over https with the token stripped, scrubs the token from the serialized body as a last defence, lets 'secure' through so upstream returns https, and sends Vary: Host because the body names this deployment's origin. A follow-up makes proxied() return an absolute URL, and that half has not landed yet: GL JS fetches tiles from a worker built on a blob URL, a blob URL has an opaque path, so resolving '/api/mapbox' against it throws inside the worker and the request never leaves the browser (verified: blob worker throws on the relative form, 200 on the absolute one).
+**Alternatives:** Leaving tile URLs as plain https api.mapbox.com and relying on transformRequest to proxy them at request time was rejected: it keeps a token-bearing body shape one upstream change away from leaking again, and the rewrite is what actually guarantees the credential never reaches the browser. Assigning mapboxgl.config.EVENTS_URL = null to silence the 503 telemetry posts was rejected because EVENTS_URL is a getter derived from API_URL, so assignment throws and takes the page down with a client-side exception; Object.defineProperty in a try/catch is used instead.
+**Scope:** app/api/mapbox/route.ts, lib/mapbox-proxy.ts (components/MapView.tsx follows separately)
+
+## 2026-09-06T21:04Z · davecthomas · main
+
+**Decision:** Check document.visibilityState before concluding a WebGL map is broken.
+**Why:** A Chrome tab driven by browser automation is usually a background tab, and Chrome suspends requestAnimationFrame there. Mapbox GL only requests tiles from inside its render loop, so a hidden tab shows zero tile requests, style.loaded() stuck false, source caches left paused, and a permanently blank base map — regardless of whether the code is correct. This masqueraded as an application bug and cost real diagnosis time. The data path can still be verified without a visible tab by pumping the loop by hand with map._render(performance.now()) and then reading tile state off the source cache.
+**Scope:** components/MapView.tsx
+
+## 2026-09-06T21:13Z · davecthomas · fix/tilejson-token-leak
+
+**Decision:** rewrite TileJSON in the proxy so the base map loads
+**Why:** The proxy guarded the request URL but streamed the upstream response through untouched. Mapbox writes the account token into every entry of a TileJSON tiles array. The browser therefore received the pk.* token the proxy exists to keep out of it (ADR-0001). It is a public token, so the exposure is quota rather than account access, but the proxy's whole premise is that no credential reaches the client. The same URLs were the reason the base map never drew. Mapbox returns them as plaintext http on a/b.tiles.mapbox.com. An https page blocks those as mixed content, and transformRequest did not treat that host as Mapbox, so no base tile ever loaded and the map showed the route and chargers over an empty frame. Seven tests cover the leak, the http shards, the placeholders and the scrub. The suite goes from 49 to 56. Verified against a local production build with the real token: six vector tiles and three DEM tiles load through the proxy, base layers render, and no response body contains the token.
+**Commit:** 64836f5
+**Source:** commit-capture
+

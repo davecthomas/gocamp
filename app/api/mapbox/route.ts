@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { resolveUpstream } from '@/lib/mapbox-proxy';
+import { resolveUpstream, rewriteTileJson } from '@/lib/mapbox-proxy';
 
 export const runtime = 'nodejs';
 
@@ -27,18 +27,50 @@ export async function GET(request: Request) {
     const upstream = await fetch(resolved.url, {
       headers: { 'user-agent': 'gocamp/2.0 (+https://gocamp-us.vercel.app)' },
     });
-    const body = await upstream.arrayBuffer();
+    const contentType = upstream.headers.get('content-type') ?? '';
     const headers = new Headers();
-    for (const key of ['content-type', 'etag', 'last-modified']) {
+    headers.set('cache-control', 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400');
+    if (contentType) headers.set('content-type', contentType);
+
+    // A TileJSON body names the tile URLs and Mapbox writes the account token into
+    // every one of them, so a text body is rewritten rather than streamed (ADR-0001).
+    // The path decides alongside the content type: an error path answering a .json
+    // request as text/plain would otherwise stream the token straight through, and
+    // that is the one case this is here to make impossible.
+    if (/\b(?:json|text|xml)\b/i.test(contentType) || resolved.url.pathname.endsWith('.json')) {
+      const rewritten = rewriteTileJson(await upstream.text(), publicOrigin(request), token);
+      // The rewritten tile URLs name this deployment's own origin, so a shared cache
+      // must not hand one host's body to another.
+      headers.set('vary', 'Host');
+      // The validators describe the upstream body, not the one we return, so they go.
+      return new NextResponse(rewritten, { status: upstream.status, headers });
+    }
+
+    for (const key of ['etag', 'last-modified']) {
       const value = upstream.headers.get(key);
       if (value) headers.set(key, value);
     }
-    headers.set('cache-control', 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400');
-    return new NextResponse(body, { status: upstream.status, headers });
+    return new NextResponse(await upstream.arrayBuffer(), { status: upstream.status, headers });
   } catch (error) {
     return NextResponse.json(
       { error: 'upstream request failed', detail: error instanceof Error ? error.message : String(error) },
       { status: 502 },
     );
   }
+}
+
+/**
+ * The origin the browser will use to reach this deployment.
+ *
+ * It is baked into the rewritten tile templates, so it has to be reachable from
+ * the client rather than from the server. On Vercel, Next trusts the Host header
+ * and `request.url` already carries the public origin. A self-hosted `next start`
+ * behind a TLS-terminating proxy does not: there `request.url` is the bind address,
+ * and every tile template would come out pointing at localhost. PUBLIC_ORIGIN is
+ * the override for that shape.
+ */
+function publicOrigin(request: Request): string {
+  const configured = process.env.PUBLIC_ORIGIN?.trim();
+  if (configured) return configured.replace(/\/+$/, '');
+  return new URL(request.url).origin;
 }

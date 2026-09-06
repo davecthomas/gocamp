@@ -152,6 +152,21 @@ describe('mapbox proxy TileJSON rewriting', () => {
     expect(proxiedTileTemplate('https://evil.test/{z}/{x}/{y}.pbf', ORIGIN)).toBeNull();
   });
 
+  it('refuses to rewrite a path the proxy would go on to refuse', () => {
+    // The two allow lists would otherwise drift: rewriting a path outside
+    // ALLOWED_PREFIXES swaps a working URL for one the proxy answers 400 to,
+    // and the layer silently never draws.
+    expect(proxiedTileTemplate('https://api.mapbox.com/3dtiles/v1/mapbox/{z}/{x}/{y}.glb', ORIGIN)).toBeNull();
+    expect(proxiedTileTemplate('https://api.mapbox.com/tokens/v2/someone', ORIGIN)).toBeNull();
+  });
+
+  it('leaves an entry it will not rewrite in place, with the token gone', () => {
+    const body = tileJson([`https://api.mapbox.com/3dtiles/v1/x/{z}/{x}/{y}.glb?access_token=${TOKEN}`]);
+    const out = rewriteTileJson(body, ORIGIN, TOKEN);
+    expect(out).not.toContain(TOKEN);
+    expect(JSON.parse(out).tiles[0]).toContain('api.mapbox.com/3dtiles/v1/');
+  });
+
   it('scrubs the token from a body it cannot parse or rewrite', () => {
     expect(rewriteTileJson(`not json ${TOKEN}`, ORIGIN, TOKEN)).not.toContain(TOKEN);
     expect(rewriteTileJson(JSON.stringify({ attribution: `x ${TOKEN}` }), ORIGIN, TOKEN)).not.toContain(TOKEN);

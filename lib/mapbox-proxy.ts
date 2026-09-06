@@ -101,6 +101,13 @@ export function proxiedTileTemplate(raw: string, origin: string): string | null 
   upstream.hostname = 'api.mapbox.com';
   upstream.searchParams.delete('access_token');
 
+  // Only rewrite what resolveUpstream would go on to accept. The two allow lists
+  // are otherwise free to drift: a style naming a path outside ALLOWED_PREFIXES
+  // would have its working URL replaced by one the proxy itself answers 400 to,
+  // and the layer would silently never draw. Leaving the entry alone keeps a URL
+  // that at least works, and the caller scrubs the token from it either way.
+  if (!ALLOWED_PREFIXES.some((prefix) => upstream.pathname.startsWith(prefix))) return null;
+
   const target = keepPlaceholders(upstream.toString());
   return `${origin}${PROXY_PATH}?u=${keepPlaceholders(encodeURIComponent(target))}`;
 }

@@ -33,13 +33,16 @@ export async function GET(request: Request) {
     if (contentType) headers.set('content-type', contentType);
 
     // A TileJSON body names the tile URLs and Mapbox writes the account token into
-    // every one of them, so JSON is rewritten rather than streamed (ADR-0001). The
-    // validators describe the upstream body, not the one we return, so they go.
-    if (contentType.includes('json')) {
-      const rewritten = rewriteTileJson(await upstream.text(), new URL(request.url).origin, token);
+    // every one of them, so a text body is rewritten rather than streamed (ADR-0001).
+    // The path decides alongside the content type: an error path answering a .json
+    // request as text/plain would otherwise stream the token straight through, and
+    // that is the one case this is here to make impossible.
+    if (/\b(?:json|text|xml)\b/i.test(contentType) || resolved.url.pathname.endsWith('.json')) {
+      const rewritten = rewriteTileJson(await upstream.text(), publicOrigin(request), token);
       // The rewritten tile URLs name this deployment's own origin, so a shared cache
       // must not hand one host's body to another.
       headers.set('vary', 'Host');
+      // The validators describe the upstream body, not the one we return, so they go.
       return new NextResponse(rewritten, { status: upstream.status, headers });
     }
 
@@ -54,4 +57,20 @@ export async function GET(request: Request) {
       { status: 502 },
     );
   }
+}
+
+/**
+ * The origin the browser will use to reach this deployment.
+ *
+ * It is baked into the rewritten tile templates, so it has to be reachable from
+ * the client rather than from the server. On Vercel, Next trusts the Host header
+ * and `request.url` already carries the public origin. A self-hosted `next start`
+ * behind a TLS-terminating proxy does not: there `request.url` is the bind address,
+ * and every tile template would come out pointing at localhost. PUBLIC_ORIGIN is
+ * the override for that shape.
+ */
+function publicOrigin(request: Request): string {
+  const configured = process.env.PUBLIC_ORIGIN?.trim();
+  if (configured) return configured.replace(/\/+$/, '');
+  return new URL(request.url).origin;
 }

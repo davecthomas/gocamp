@@ -9,8 +9,14 @@ import type { Scenario } from '@/lib/types';
 import { weatherFor } from '@/lib/weather';
 import type { TripState } from './useTrip';
 
-/** Every Mapbox request goes through our own endpoint, which attaches the token (ADR-0001). */
-const proxied = (url: string) => `/api/mapbox?u=${encodeURIComponent(url)}`;
+/**
+ * Every Mapbox request goes through our own endpoint, which attaches the token (ADR-0001).
+ *
+ * Absolute, not root-relative. GL JS fetches tiles from a worker it creates out of a
+ * blob URL, and a blob URL has an opaque path, so resolving `/api/mapbox` against it
+ * throws inside the worker and the tile request never leaves the browser.
+ */
+const proxied = (url: string) => `${window.location.origin}/api/mapbox?u=${encodeURIComponent(url)}`;
 
 const ROUTE_COLOR = '#2c5424';
 const BRANCH_COLOR = '#1f5978';
@@ -96,6 +102,18 @@ export function MapView({ scenario, trip }: { scenario: Scenario; trip: TripStat
     // GL JS requires a token to be set. The proxy replaces it on every request,
     // so this placeholder never reaches Mapbox and grants nothing.
     mapboxgl.accessToken = 'proxied';
+
+    // Telemetry is posted straight to events.mapbox.com without going through
+    // transformRequest, so it puts the placeholder token on the wire and comes
+    // back 503 three times on every map load. GL JS skips the post entirely when
+    // EVENTS_URL is null, but publishes it as a getter derived from API_URL, so
+    // it has to be redefined rather than assigned. Guarded: silencing telemetry
+    // is not worth taking the map down if a later build seals the property.
+    try {
+      Object.defineProperty(mapboxgl.config, 'EVENTS_URL', { value: null, configurable: true });
+    } catch {
+      // Telemetry stays noisy; the map is unaffected.
+    }
 
     const startStyle = MAP_STYLES.find((s) => s.id === DEFAULT_STYLE)!.url;
     const instance = new mapboxgl.Map({

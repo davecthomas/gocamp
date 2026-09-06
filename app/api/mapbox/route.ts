@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { resolveUpstream } from '@/lib/mapbox-proxy';
+import { resolveUpstream, rewriteTileJson } from '@/lib/mapbox-proxy';
 
 export const runtime = 'nodejs';
 
@@ -27,14 +27,27 @@ export async function GET(request: Request) {
     const upstream = await fetch(resolved.url, {
       headers: { 'user-agent': 'gocamp/2.0 (+https://gocamp-us.vercel.app)' },
     });
-    const body = await upstream.arrayBuffer();
+    const contentType = upstream.headers.get('content-type') ?? '';
     const headers = new Headers();
-    for (const key of ['content-type', 'etag', 'last-modified']) {
+    headers.set('cache-control', 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400');
+    if (contentType) headers.set('content-type', contentType);
+
+    // A TileJSON body names the tile URLs and Mapbox writes the account token into
+    // every one of them, so JSON is rewritten rather than streamed (ADR-0001). The
+    // validators describe the upstream body, not the one we return, so they go.
+    if (contentType.includes('json')) {
+      const rewritten = rewriteTileJson(await upstream.text(), new URL(request.url).origin, token);
+      // The rewritten tile URLs name this deployment's own origin, so a shared cache
+      // must not hand one host's body to another.
+      headers.set('vary', 'Host');
+      return new NextResponse(rewritten, { status: upstream.status, headers });
+    }
+
+    for (const key of ['etag', 'last-modified']) {
       const value = upstream.headers.get(key);
       if (value) headers.set(key, value);
     }
-    headers.set('cache-control', 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400');
-    return new NextResponse(body, { status: upstream.status, headers });
+    return new NextResponse(await upstream.arrayBuffer(), { status: upstream.status, headers });
   } catch (error) {
     return NextResponse.json(
       { error: 'upstream request failed', detail: error instanceof Error ? error.message : String(error) },

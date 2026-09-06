@@ -1,0 +1,8 @@
+{
+  "context_budget_words": 2500,
+  "decision_surfaces": [
+    "docs/**"
+  ],
+  "notes_full_days": 3,
+  "notes_window_days": 14
+}

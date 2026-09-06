@@ -48,3 +48,9 @@
 **Commit:** 64836f5
 **Source:** commit-capture
 
+## 2026-09-06T21:59Z · davecthomas · fix/worker-safe-proxy-urls
+
+**Decision:** Make proxy URLs absolute so the tile worker can fetch them, and leave Mapbox telemetry alone.
+**Why:** GL JS fetches tiles from a worker it builds out of a blob URL, and a blob URL has an opaque path. Resolving a root-relative `/api/mapbox?u=...` against that base throws inside the worker, so the request never reaches the network and GL JS surfaces no error. Verified in a blob worker: the relative form throws Failed to parse URL, the absolute form returns 200. Nothing depends on this today, since the proxy already rewrites TileJSON tile URLs to absolute ones; it closes the trap for anything else the worker fetches.
+**Alternatives:** Nulling mapboxgl.config.EVENTS_URL to silence the three 503 telemetry posts per map load was tried and rejected. In mapbox-gl 3.30.0 that one flag gates three things, not one: postEvent (telemetry), isTelemetryEnabled (the appUserTurnstile MAU event), and getSessionAPI, which is the /map-sessions/v1 session call Mapbox uses for billing accounting. Map._authenticate calls both and sits inside the block the vendor delimits with "REMOVAL OR MODIFICATION OF THE FOLLOWING CODE VIOLATES THE MAPBOX TERMS OF SERVICE". Suppressing it would stop usage reporting while proxied tiles keep billing the token, and would defeat the '/map-sessions/' entry the proxy allow list carries on purpose. The 503s are cosmetic; an account risk is not. Note the session call is already failing for a different reason: getSession builds its URL from config.API_URL + config.SESSION_PATH and calls getData directly, bypassing transformRequest, so it goes out with the placeholder token. Routing it through the proxy is the real fix, and it needs POST support on the route handler.
+**Scope:** components/MapView.tsx

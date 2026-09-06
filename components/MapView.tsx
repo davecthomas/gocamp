@@ -103,18 +103,6 @@ export function MapView({ scenario, trip }: { scenario: Scenario; trip: TripStat
     // so this placeholder never reaches Mapbox and grants nothing.
     mapboxgl.accessToken = 'proxied';
 
-    // Telemetry is posted straight to events.mapbox.com without going through
-    // transformRequest, so it puts the placeholder token on the wire and comes
-    // back 503 three times on every map load. GL JS skips the post entirely when
-    // EVENTS_URL is null, but publishes it as a getter derived from API_URL, so
-    // it has to be redefined rather than assigned. Guarded: silencing telemetry
-    // is not worth taking the map down if a later build seals the property.
-    try {
-      Object.defineProperty(mapboxgl.config, 'EVENTS_URL', { value: null, configurable: true });
-    } catch {
-      // Telemetry stays noisy; the map is unaffected.
-    }
-
     const startStyle = MAP_STYLES.find((s) => s.id === DEFAULT_STYLE)!.url;
     const instance = new mapboxgl.Map({
       container: container.current,

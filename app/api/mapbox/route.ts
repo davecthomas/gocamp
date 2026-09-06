@@ -25,7 +25,7 @@ export async function GET(request: Request) {
 
   try {
     const upstream = await fetch(resolved.url, {
-      headers: { 'user-agent': 'rockies-line/2.0 (+https://rockies-line.vercel.app)' },
+      headers: { 'user-agent': 'gocamp/2.0 (+https://rockies-line.vercel.app)' },
     });
     const body = await upstream.arrayBuffer();
     const headers = new Headers();

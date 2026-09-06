@@ -1,10 +1,15 @@
-# The Rockies Line
+# GoCamp
 
 Camping route planner. Each route is a **scenario**: a YAML file describing the legs,
 the parks, the vehicle, the charging network and the prose. The app renders whichever
 scenario you pick and works out the driving, charging, weather and paperwork for it.
 
-Live at https://rockies-line.vercel.app
+The Rockies Line, an Austin-to-Seattle route through the national and state parks of
+the Rockies, is the first scenario. It lives at `scenarios/rockies-line.yaml`, not in
+the app's name, so a second route is a new file rather than a rename.
+
+Live at https://rockies-line.vercel.app (repo and URL predate the GoCamp name; see
+the note below).
 
 ## Adding a scenario
 
@@ -69,3 +74,10 @@ hidden rather than showing an empty frame (ADR-0006).
 
 `.agents/memory/adr/` records the decisions that still govern this code. Read the ones
 marked must-read before making architectural changes.
+
+## Naming
+
+The app is called GoCamp. The GitHub repo (`davecthomas/rockies-line`), the Vercel
+project, and the `rockies-line.vercel.app` URL still carry the old name from when this
+was a single-scenario app. Renaming those is a separate step — it changes a live URL —
+and hasn't been done yet.

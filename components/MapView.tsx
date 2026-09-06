@@ -17,7 +17,28 @@ const BRANCH_COLOR = '#1f5978';
 const PARK_COLOR = '#a5461c';
 const CHARGER_COLOR = '#c02f22';
 
+/**
+ * Mapbox's own styles. Outdoors reads as a near-blank pale wash at the zoom this
+ * route sits at (mostly light terrain fill, thin lines, little built-up area to
+ * give it contrast), so Streets is the default: it carries real color at any
+ * zoom. Outdoors stays in the list for anyone who wants the contour detail once
+ * they're zoomed into a single pass.
+ */
+const MAP_STYLES = [
+  { id: 'streets', label: 'Streets', url: 'mapbox://styles/mapbox/streets-v12' },
+  { id: 'outdoors', label: 'Outdoors', url: 'mapbox://styles/mapbox/outdoors-v12' },
+  { id: 'light', label: 'Light', url: 'mapbox://styles/mapbox/light-v11' },
+  { id: 'dark', label: 'Dark', url: 'mapbox://styles/mapbox/dark-v11' },
+  { id: 'satellite', label: 'Satellite streets', url: 'mapbox://styles/mapbox/satellite-streets-v12' },
+  { id: 'navday', label: 'Navigation day', url: 'mapbox://styles/mapbox/navigation-day-v1' },
+] as const;
+
+type MapStyleId = (typeof MAP_STYLES)[number]['id'];
+const DEFAULT_STYLE: MapStyleId = 'streets';
+
 function stopPopupHTML(scenario: Scenario, trip: TripState, id: string, label: string): string {
+  // The branch stop stays on the map even when the branch toggle is off, so its
+  // leg may not be in trip.legs; fall back to the scenario's branch leg for it.
   const leg = trip.legs.find((l) => l.id === id) ?? scenario.branchLegs.find((l) => l.id === id);
   if (!leg) return `<h5>${label}</h5>`;
 
@@ -56,9 +77,15 @@ function stopPopupHTML(scenario: Scenario, trip: TripState, id: string, label: s
 export function MapView({ scenario, trip }: { scenario: Scenario; trip: TripState }) {
   const container = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
+  const chargersOn = useRef(true);
+  const isFirstStyleChange = useRef(true);
   const [failed, setFailed] = useState(false);
-  const [chargersOn, setChargersOn] = useState(true);
+  const [chargersVisible, setChargersVisible] = useState(true);
+  const [styleId, setStyleId] = useState<MapStyleId>(DEFAULT_STYLE);
 
+  // Build the map once. Sources and layers are (re)built by addLayers, which runs
+  // on every 'style.load' — including the ones setStyle triggers later — since
+  // swapping styles discards everything the previous style owned.
   useEffect(() => {
     if (!container.current || map.current) return;
     if (!mapboxgl.supported?.()) {
@@ -70,9 +97,10 @@ export function MapView({ scenario, trip }: { scenario: Scenario; trip: TripStat
     // so this placeholder never reaches Mapbox and grants nothing.
     mapboxgl.accessToken = 'proxied';
 
+    const startStyle = MAP_STYLES.find((s) => s.id === DEFAULT_STYLE)!.url;
     const instance = new mapboxgl.Map({
       container: container.current,
-      style: 'mapbox://styles/mapbox/outdoors-v12',
+      style: startStyle,
       center: [-110.5, 42.5],
       zoom: 4.2,
       cooperativeGestures: true,
@@ -92,30 +120,33 @@ export function MapView({ scenario, trip }: { scenario: Scenario; trip: TripStat
 
     // If the map never finishes — no WebGL, a blocked host, a tab that never
     // paints — fall back rather than leaving an empty frame (ADR-0006).
-    const guard = setTimeout(() => setFailed(true), 9000);
+    let guard: ReturnType<typeof setTimeout> | null = setTimeout(() => setFailed(true), 9000);
+    let firstLoad = true;
 
-    instance.on('load', () => {
-      clearTimeout(guard);
+    function addLayers() {
+      if (guard) {
+        clearTimeout(guard);
+        guard = null;
+      }
       const line = (coords: [number, number][]) => ({
         type: 'Feature' as const,
         properties: {},
         geometry: { type: 'LineString' as const, coordinates: coords.map(([lat, lon]) => [lon, lat]) },
       });
 
-      instance.addSource('dem', {
-        type: 'raster-dem',
-        url: 'mapbox://mapbox.mapbox-terrain-dem-v1',
-        tileSize: 512,
-        maxzoom: 14,
-      });
+      if (!instance.getSource('dem')) {
+        instance.addSource('dem', {
+          type: 'raster-dem',
+          url: 'mapbox://mapbox.mapbox-terrain-dem-v1',
+          tileSize: 512,
+          maxzoom: 14,
+        });
+      }
       instance.setTerrain({ source: 'dem', exaggeration: 1.15 });
 
       instance.addSource('route', {
         type: 'geojson',
-        data: {
-          type: 'FeatureCollection',
-          features: [line(scenario.geometry.main), line(scenario.geometry.direct)],
-        },
+        data: { type: 'FeatureCollection', features: [line(scenario.geometry.main), line(scenario.geometry.direct)] },
       });
       instance.addSource('branch', { type: 'geojson', data: line(scenario.geometry.branch) });
       instance.addLayer({
@@ -151,10 +182,12 @@ export function MapView({ scenario, trip }: { scenario: Scenario; trip: TripStat
           })),
         },
       });
+      const visibility = chargersOn.current ? 'visible' : 'none';
       instance.addLayer({
         id: 'chargers',
         type: 'circle',
         source: 'chargers',
+        layout: { visibility },
         paint: {
           'circle-radius': ['interpolate', ['linear'], ['zoom'], 4, 2.6, 8, 5, 12, 8],
           'circle-color': CHARGER_COLOR,
@@ -169,6 +202,7 @@ export function MapView({ scenario, trip }: { scenario: Scenario; trip: TripStat
         source: 'chargers',
         minzoom: 8,
         layout: {
+          visibility,
           'text-field': ['concat', ['get', 'name'], '  ', ['to-string', ['get', 'stalls']], ' stalls'],
           'text-size': 11,
           'text-offset': [0, 1.1],
@@ -177,38 +211,46 @@ export function MapView({ scenario, trip }: { scenario: Scenario; trip: TripStat
         paint: { 'text-color': CHARGER_COLOR, 'text-halo-color': '#ffffff', 'text-halo-width': 1.6 },
       });
 
-      const hover = new mapboxgl.Popup({ closeButton: false, closeOnClick: false, offset: 10 });
-      instance.on('mouseenter', 'chargers', (e) => {
-        instance.getCanvas().style.cursor = 'pointer';
-        const f = e.features?.[0];
-        if (!f || f.geometry.type !== 'Point') return;
-        const p = f.properties as { name: string; stalls: number; kw: number };
-        hover
-          .setLngLat(f.geometry.coordinates as [number, number])
-          .setHTML(`<b>${p.name}</b><br>${p.stalls} stalls · ${p.kw} kW`)
-          .addTo(instance);
-      });
-      instance.on('mouseleave', 'chargers', () => {
-        instance.getCanvas().style.cursor = '';
-        hover.remove();
-      });
+      if (firstLoad) {
+        firstLoad = false;
 
-      for (const stop of scenario.mapStops) {
-        const isPark = stop.kind === 'np' || stop.kind === 'sp' || stop.kind === 'nf';
-        const el = document.createElement('div');
-        const size = isPark ? 16 : 13;
-        el.style.cssText = `width:${size}px;height:${size}px;border-radius:50%;cursor:pointer;background:${
-          isPark ? PARK_COLOR : ROUTE_COLOR
-        };border:2.5px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.5)`;
-        el.title = stop.label;
-        new mapboxgl.Marker({ element: el })
-          .setLngLat([stop.lon, stop.lat])
-          .setPopup(new mapboxgl.Popup({ offset: 14 }).setHTML(stopPopupHTML(scenario, trip, stop.id, stop.label)))
-          .addTo(instance);
+        const hover = new mapboxgl.Popup({ closeButton: false, closeOnClick: false, offset: 10 });
+        instance.on('mouseenter', 'chargers', (e) => {
+          instance.getCanvas().style.cursor = 'pointer';
+          const f = e.features?.[0];
+          if (!f || f.geometry.type !== 'Point') return;
+          const p = f.properties as { name: string; stalls: number; kw: number };
+          hover
+            .setLngLat(f.geometry.coordinates as [number, number])
+            .setHTML(`<b>${p.name}</b><br>${p.stalls} stalls · ${p.kw} kW`)
+            .addTo(instance);
+        });
+        instance.on('mouseleave', 'chargers', () => {
+          instance.getCanvas().style.cursor = '';
+          hover.remove();
+        });
+
+        for (const stop of scenario.mapStops) {
+          const isPark = stop.kind === 'np' || stop.kind === 'sp' || stop.kind === 'nf';
+          const el = document.createElement('div');
+          const size = isPark ? 16 : 13;
+          el.style.cssText = `width:${size}px;height:${size}px;border-radius:50%;cursor:pointer;background:${
+            isPark ? PARK_COLOR : ROUTE_COLOR
+          };border:2.5px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.5)`;
+          el.title = stop.label;
+          new mapboxgl.Marker({ element: el })
+            .setLngLat([stop.lon, stop.lat])
+            .setPopup(new mapboxgl.Popup({ offset: 14 }).setHTML(stopPopupHTML(scenario, trip, stop.id, stop.label)))
+            .addTo(instance);
+        }
+
+        instance.fitBounds(bounds, { padding: 26, duration: 0 });
       }
+    }
 
-      instance.fitBounds(bounds, { padding: 26, duration: 0 });
-    });
+    // Fires on the initial style and again on every setStyle, which is what lets
+    // the style picker swap basemaps without losing the route, stops or chargers.
+    instance.on('style.load', addLayers);
 
     instance.on('error', (e) => {
       const message = e.error?.message ?? '';
@@ -216,7 +258,7 @@ export function MapView({ scenario, trip }: { scenario: Scenario; trip: TripStat
     });
 
     return () => {
-      clearTimeout(guard);
+      if (guard) clearTimeout(guard);
       instance.remove();
       map.current = null;
     };
@@ -225,11 +267,22 @@ export function MapView({ scenario, trip }: { scenario: Scenario; trip: TripStat
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scenario]);
 
+  // Swapping styles is cheap: setStyle, and 'style.load' rebuilds the overlay.
+  useEffect(() => {
+    if (isFirstStyleChange.current) {
+      isFirstStyleChange.current = false;
+      return;
+    }
+    const style = MAP_STYLES.find((s) => s.id === styleId);
+    if (style && map.current) map.current.setStyle(style.url);
+  }, [styleId]);
+
   function toggleChargers() {
     const instance = map.current;
+    const next = !chargersOn.current;
+    chargersOn.current = next;
+    setChargersVisible(next);
     if (!instance) return;
-    const next = !chargersOn;
-    setChargersOn(next);
     for (const id of ['chargers', 'charger-labels']) {
       if (instance.getLayer(id)) instance.setLayoutProperty(id, 'visibility', next ? 'visible' : 'none');
     }
@@ -249,8 +302,22 @@ export function MapView({ scenario, trip }: { scenario: Scenario; trip: TripStat
   return (
     <div className="mapcard">
       <div className="mapctl" role="group" aria-label="Map view controls">
-        <button type="button" className="mapbtn" onClick={toggleChargers} aria-pressed={chargersOn}>
-          {chargersOn ? 'Hide chargers' : 'Show chargers'}
+        <label className="mapselect-wrap">
+          <span className="sr-only">Map style</span>
+          <select
+            className="mapselect"
+            value={styleId}
+            onChange={(e) => setStyleId(e.target.value as MapStyleId)}
+          >
+            {MAP_STYLES.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.label}
+              </option>
+            ))}
+          </select>
+        </label>
+        <button type="button" className="mapbtn" onClick={toggleChargers} aria-pressed={chargersVisible}>
+          {chargersVisible ? 'Hide chargers' : 'Show chargers'}
         </button>
       </div>
       <div ref={container} className="realmap on" />

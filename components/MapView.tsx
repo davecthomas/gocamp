@@ -9,8 +9,14 @@ import type { Scenario } from '@/lib/types';
 import { weatherFor } from '@/lib/weather';
 import type { TripState } from './useTrip';
 
-/** Every Mapbox request goes through our own endpoint, which attaches the token (ADR-0001). */
-const proxied = (url: string) => `/api/mapbox?u=${encodeURIComponent(url)}`;
+/**
+ * Every Mapbox request goes through our own endpoint, which attaches the token (ADR-0001).
+ *
+ * Absolute, not root-relative. GL JS fetches tiles from a worker it creates out of a
+ * blob URL, and a blob URL has an opaque path, so resolving `/api/mapbox` against it
+ * throws inside the worker and the tile request never leaves the browser.
+ */
+const proxied = (url: string) => `${window.location.origin}/api/mapbox?u=${encodeURIComponent(url)}`;
 
 const ROUTE_COLOR = '#2c5424';
 const BRANCH_COLOR = '#1f5978';

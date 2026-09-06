@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import type { Scenario } from '@/lib/types';
 import dynamic from 'next/dynamic';
+import { CalloutBlock, Checklist, PassesAndFees, SeasonWindows, SourcesFooter } from './ContentSections';
 import { StatBar } from './StatBar';
 import { StopList } from './StopList';
 
@@ -19,6 +20,10 @@ export function ScenarioView({ scenario }: { scenario: Scenario }) {
     .filter((leg) => leg.parkId)
     .map((leg) => leg.badge.text)
     .join(' → ');
+
+  // The altitude callout explains the numbers in the settings panel, so it sits
+  // with them; the rest read better after the stops they describe.
+  const [altitudeCallout, ...otherCallouts] = scenario.content.callouts;
 
   return (
     <div className="wrap">
@@ -41,6 +46,8 @@ export function ScenarioView({ scenario }: { scenario: Scenario }) {
       </div>
       <TripSettingsPanel scenario={scenario} trip={trip} />
 
+      {altitudeCallout && <CalloutBlock callout={altitudeCallout} />}
+
       <MapView scenario={scenario} trip={trip} />
 
       <div className="section-head">
@@ -48,6 +55,14 @@ export function ScenarioView({ scenario }: { scenario: Scenario }) {
         <span className="tag">{parkSequence}</span>
       </div>
       <StopList scenario={scenario} trip={trip} />
+
+      <SeasonWindows scenario={scenario} />
+      {otherCallouts.map((callout) => (
+        <CalloutBlock key={callout.title} callout={callout} />
+      ))}
+      <PassesAndFees scenario={scenario} />
+      <Checklist scenario={scenario} />
+      <SourcesFooter scenario={scenario} />
     </div>
   );
 }

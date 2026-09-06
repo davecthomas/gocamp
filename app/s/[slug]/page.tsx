@@ -10,7 +10,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const scenario = getScenario(slug);
   if (!scenario) return {};
-  return { title: `${scenario.name} — ${scenario.headline}`, description: scenario.summary };
+  return { title: scenario.headline, description: scenario.summary };
 }
 
 export default async function ScenarioPage({ params }: { params: Promise<{ slug: string }> }) {

@@ -2,11 +2,11 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'The Rockies Line',
+  title: { default: 'GoCamp', template: '%s · GoCamp' },
   description:
     'Camping route planner: park-to-park scenarios with per-stop dates, climate normals, dog rules, park passes and EV range maths.',
   icons: {
-    icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8F%94%EF%B8%8F%3C/text%3E%3C/svg%3E",
+    icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9B%BA%EF%B8%8F%3C/text%3E%3C/svg%3E",
   },
 };
 

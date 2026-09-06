@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <div className="wrap">
       <header>
-        <div className="eyebrow">Route scenarios</div>
+        <div className="eyebrow">GoCamp</div>
         <h1>Camping routes, planned properly</h1>
         <p className="dek">
           Each scenario is a route built around the parks it passes, with the driving, charging,

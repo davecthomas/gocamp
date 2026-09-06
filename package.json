@@ -1,8 +1,8 @@
 {
-  "name": "rockies-line",
+  "name": "gocamp",
   "version": "2.0.0",
   "private": true,
-  "description": "Camping route planner: park-to-park scenarios with EV range, weather and charging",
+  "description": "GoCamp: park-to-park camping route planner",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

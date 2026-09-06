@@ -8,8 +8,7 @@ The Rockies Line, an Austin-to-Seattle route through the national and state park
 the Rockies, is the first scenario. It lives at `scenarios/rockies-line.yaml`, not in
 the app's name, so a second route is a new file rather than a rename.
 
-Live at https://rockies-line.vercel.app (repo and URL predate the GoCamp name; see
-the note below).
+Live at https://gocamp-us.vercel.app
 
 ## Adding a scenario
 
@@ -77,7 +76,12 @@ marked must-read before making architectural changes.
 
 ## Naming
 
-The app is called GoCamp. The GitHub repo (`davecthomas/rockies-line`), the Vercel
-project, and the `rockies-line.vercel.app` URL still carry the old name from when this
-was a single-scenario app. Renaming those is a separate step — it changes a live URL —
-and hasn't been done yet.
+The app is called GoCamp, at `gocamp-us.vercel.app`. Plain `gocamp` and `go-camp` were
+both already taken on Vercel's shared `.vercel.app` namespace by an unrelated camping
+gear company, so this project carries the `-us` suffix. The GitHub repo lives at
+`github.com/davecthomas/gocamp`.
+
+`rockies-line.vercel.app` was the project's original URL, from when this was a
+single-scenario app named after its one route. It's superseded by `gocamp-us.vercel.app`
+above and no longer maintained; delete the `rockies-line` and `rockies-line-site`
+Vercel projects once you've moved `MAPBOX_TOKEN` and any custom domain over.

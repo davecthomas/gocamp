@@ -7,3 +7,10 @@
 **Commit:** 23acf65
 **Source:** commit-capture
 
+## 2026-09-06T14:26Z · davecthomas · feature/next-content
+
+**Decision:** Content sections rendered from the scenario
+**Why:** Callouts, seasonal windows, the passes table, the book-ahead checklist and the sources footer all render from scenario.content rather than from markup, so a new scenario brings its own prose (ADR-0002). Every titled block stays collapsed until asked for: 11 collapsibles, none open by default.
+**Commit:** e8b055a
+**Source:** commit-capture
+

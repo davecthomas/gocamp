@@ -14,3 +14,10 @@
 **Commit:** db67432
 **Source:** commit-capture
 
+## 2026-09-06T18:32Z · davecthomas · feature/rename-gocamp
+
+**Decision:** Rename the app to GoCamp
+**Why:** Rockies Line named the app after its one scenario. Now that more are coming, the app needs a name that isn't tied to a route. Title metadata uses a template, 'GoCamp' by default and '<headline> · GoCamp' per scenario, so a page's tab reads e.g. 'Austin to Seattle, park to park · GoCamp' without every scenario needing to repeat the app name itself. The scenario stays named The Rockies Line — that's the route, not the app, and lives in scenarios/rockies-line.yaml rather than in any branding. package.json, the proxy's user-agent string, and the README are updated. The GitHub repo, the Vercel project, and the rockies-line.vercel.app URL keep the old name for now; renaming those changes a live URL and is a separate step, noted in the README.
+**Commit:** 2b8a5fa
+**Source:** commit-capture
+

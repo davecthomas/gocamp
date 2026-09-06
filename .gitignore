@@ -5,3 +5,8 @@ node_modules
 .next
 *.tsbuildinfo
 coverage
+
+# >>> agentmemory (managed block; do not edit) >>>
+.githooks/
+.agents/memory/local/
+# <<< agentmemory <<<

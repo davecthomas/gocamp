@@ -593,3 +593,6 @@ footer{margin-top:2.5rem; padding-top:1.2rem; border-top:1px solid var(--line); 
 .scenario-headline{font-size:.9rem; color:var(--ink-soft); margin:0 0 .8rem;}
 .scenario-stats{display:flex; flex-wrap:wrap; gap:.4rem 1.2rem; font-size:.8rem; color:var(--ink-soft);}
 .scenario-stats b{font-family:'IBM Plex Mono',monospace; color:var(--pine); font-size:1rem;}
+
+.backlink{color:var(--pine); text-decoration:none; font-weight:600;}
+.backlink:hover{text-decoration:underline;}

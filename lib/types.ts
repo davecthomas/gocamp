@@ -11,6 +11,18 @@ export interface StopLink {
   reserve?: boolean;
 }
 
+/** A stop's hero photo. Licensed for reuse, and the credit is rendered with it. */
+export interface Hero {
+  src: string;
+  width: number;
+  height: number;
+  /** Photographer or institution, as recorded by the source. */
+  credit: string;
+  /** e.g. "CC BY-SA 4.0", "Public domain". Shown so the licence travels with the image. */
+  license: string;
+  sourceUrl: string;
+}
+
 export interface Leg {
   id: string;
   from: string;
@@ -33,6 +45,7 @@ export interface Leg {
   /** Feet this stop sits above its weather station, corrected by lapse rate. */
   stationLiftFt?: number;
   links?: StopLink[];
+  hero?: Hero;
 }
 
 export interface Vehicle {

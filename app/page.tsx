@@ -16,34 +16,37 @@ export default function Home() {
         </p>
       </header>
 
-      <div className="scenario-grid">
-        {scenarios.map((scenario) => {
-          const totals = computeTotals(scenario, scenario.defaults);
-          return (
-            <Link key={scenario.slug} href={`/s/${scenario.slug}`} className="scenario-card">
-              <div className="eyebrow">{scenario.eyebrow}</div>
-              <h2>{scenario.name}</h2>
-              <p className="scenario-headline">{scenario.headline}</p>
-              <div className="scenario-stats">
-                <span>
-                  <b>{Math.round(totals.flatMi).toLocaleString()}</b> mi
-                </span>
-                <span>
-                  <b>{totals.parkCount}</b> parks
-                </span>
-                <span>
-                  <b>{scenario.statesCrossed}</b> states
-                </span>
-              </div>
-            </Link>
-          );
-        })}
-      </div>
-
-      {scenarios.length === 0 && (
+      {scenarios.length === 0 ? (
         <p className="dek">
           No scenarios yet. Add a YAML file under <code>scenarios/</code> to create one.
         </p>
+      ) : (
+        <div className="scenario-grid">
+          {scenarios.map((scenario) => {
+            const totals = computeTotals(scenario, scenario.defaults);
+            return (
+              <Link key={scenario.slug} href={`/s/${scenario.slug}`} className="scenario-card">
+                <div className="eyebrow">{scenario.eyebrow}</div>
+                <h2>{scenario.name}</h2>
+                <p className="scenario-headline">{scenario.headline}</p>
+                <div className="scenario-stats">
+                  <span>
+                    <b>{Math.round(totals.flatMi).toLocaleString()}</b> mi
+                  </span>
+                  <span>
+                    <b>{totals.parkCount}</b> parks
+                  </span>
+                  <span>
+                    <b>{scenario.statesCrossed}</b> states
+                  </span>
+                  <span>
+                    <b>{scenario.chargers.length}</b> chargers
+                  </span>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
       )}
     </div>
   );

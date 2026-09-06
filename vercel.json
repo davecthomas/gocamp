@@ -1,9 +1,9 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "echo 'static site: nothing to build'",
-  "installCommand": "echo 'no dependencies'",
-  "outputDirectory": "public",
-  "framework": null,
+  "framework": "nextjs",
+  "installCommand": "npm ci",
+  "buildCommand": "next build",
+  "outputDirectory": ".next",
   "headers": [
     {
       "source": "/(.*)",
@@ -12,5 +12,8 @@
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
       ]
     }
+  ],
+  "redirects": [
+    { "source": "/index.html", "destination": "/", "permanent": true }
   ]
 }

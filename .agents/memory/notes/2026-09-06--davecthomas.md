@@ -7,3 +7,10 @@
 **Commit:** 23acf65
 **Source:** commit-capture
 
+## 2026-09-06T14:27Z · davecthomas · feature/next-cutover
+
+**Decision:** Cut production over to Next.js and retire the static site
+**Why:** Removes public/ and api/mapbox.js, and points vercel.json at the nextjs framework instead of the no-op build command that was overriding a stale dashboard setting. Adds a permanent redirect from /index.html to /. The Next.js app now serves everything: the scenario index, the prerendered scenario page, and the Mapbox proxy as a route handler.
+**Commit:** db67432
+**Source:** commit-capture
+

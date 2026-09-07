@@ -733,556 +733,662 @@ chargers:
     lon: -116.794
     stalls: 14
     kw: 250
+    locationId: "coeurdaleneidsupercharger"
   - name: Kalispell, MT
     lat: 48.2414
     lon: -114.327
     stalls: 8
     kw: 325
+    locationId: "19096"
   - name: Missoula, MT
     lat: 46.9144
     lon: -114.032
     stalls: 6
     kw: 150
+    locationId: "missoulasupercharger"
   - name: Kellogg, ID
     lat: 47.547
     lon: -116.132
     stalls: 8
     kw: 500
+    locationId: "412918"
   - name: Missoula, MT - Hwy 93 N
     lat: 46.9542
     lon: -114.132
     stalls: 12
     kw: 250
+    locationId: "19130"
   - name: St. Regis, MT
     lat: 47.2989
     lon: -115.099
     stalls: 12
     kw: 250
+    locationId: "33470"
   - name: Superior, MT
     lat: 47.1921
     lon: -114.889
     stalls: 4
     kw: 150
+    locationId: "superiormtsupercharger"
   - name: Bellevue, WA
     lat: 47.6107
     lon: -122.202
     stalls: 8
     kw: 72
+    locationId: "BellevueWAsupercharger"
   - name: Bellevue, WA - NE 8th St
     lat: 47.6177
     lon: -122.197
     stalls: 8
     kw: 325
+    locationId: "26594"
   - name: Cle Elum, WA - W Davis St
     lat: 47.1953
     lon: -120.956
     stalls: 8
     kw: 250
+    locationId: "19021"
   - name: Cle Elum, WA
     lat: 47.1893
     lon: -120.903
     stalls: 12
     kw: 150
+    locationId: "cleelumwasupercharger"
   - name: Ellensburg, WA - S Water St
     lat: 46.9907
     lon: -120.55
     stalls: 16
     kw: 325
+    locationId: "458005"
   - name: Ellensburg, WA
     lat: 46.9769
     lon: -120.542
     stalls: 5
     kw: 120
+    locationId: "ellensburgwasupercharger"
   - name: Ellensburg, WA - Canyon Rd
     lat: 46.978
     lon: -120.543
     stalls: 12
     kw: 250
+    locationId: "EllensburgWASupercharger22"
   - name: George, WA
     lat: 47.0811
     lon: -119.862
     stalls: 12
     kw: 250
+    locationId: "31043"
   - name: Issaquah, WA - NW Gilman Blvd
     lat: 47.5432
     lon: -122.048
     stalls: 16
     kw: 325
+    locationId: "26482"
   - name: Issaquah, WA - Klahanie Dr SE
     lat: 47.5649
     lon: -122.003
     stalls: 12
     kw: 325
+    locationId: "436310"
   - name: Issaquah, WA
     lat: 47.548
     lon: -122.04
     stalls: 8
     kw: 72
+    locationId: "issaquahwasupercharger"
   - name: Kirkland, WA
     lat: 47.7092
     lon: -122.184
     stalls: 12
     kw: 250
+    locationId: "20292"
   - name: Liberty Lake (SC), WA
     lat: 47.6733
     lon: -117.114
     stalls: 12
     kw: 250
+    locationId: "SpokaneWASupercharger"
   - name: Moses Lake, WA
     lat: 47.1035
     lon: -119.31
     stalls: 12
     kw: 250
+    locationId: "moseslakesupercharger"
   - name: North Bend, WA - S Fork Ave SW
     lat: 47.4908
     lon: -121.796
     stalls: 24
     kw: 325
+    locationId: "19139"
   - name: North Bend, WA
     lat: 47.4681
     lon: -121.716
     stalls: 8
     kw: 250
+    locationId: "northbendsupercharger"
   - name: Quincy, WA
     lat: 47.1034
     lon: -119.834
     stalls: 8
     kw: 250
+    locationId: "QuincyWASupercharger"
   - name: Redmond, WA
     lat: 47.6286
     lon: -122.141
     stalls: 8
     kw: 325
+    locationId: "14757"
   - name: Renton, WA - SW 41st St
     lat: 47.4431
     lon: -122.225
     stalls: 16
     kw: 250
+    locationId: "21091"
   - name: Sammamish, WA - Issaquah-Pine Lake Rd SE
     lat: 47.582
     lon: -122.034
     stalls: 8
     kw: 325
+    locationId: "436210"
   - name: Sammamish, WA
     lat: 47.6163
     lon: -122.033
     stalls: 8
     kw: 250
+    locationId: "15300"
   - name: Seattle, WA - NE Northgate Way
     lat: 47.706
     lon: -122.327
     stalls: 16
     kw: 250
+    locationId: "seattlewashingtonnorthgatesupercharger"
   - name: Seattle, WA - Meridian Ave N
     lat: 47.7069
     lon: -122.334
     stalls: 12
     kw: 325
+    locationId: "19184"
   - name: Seattle, WA - Union St
     lat: 47.6097
     lon: -122.332
     stalls: 10
     kw: 72
+    locationId: "seattlewaunionsupercharger"
   - name: Seattle, WA - 1201 2nd Avenue
     lat: 47.6067
     lon: -122.337
     stalls: 4
     kw: 72
+    locationId: "seattlewa2ndavenuesupercharger"
   - name: Seattle, WA - NW Ballard Way
     lat: 47.6626
     lon: -122.375
     stalls: 8
     kw: 150
+    locationId: "seattlewanwballardwaysupercharger"
   - name: Seattle, WA
     lat: 47.6611
     lon: -122.37
     stalls: 12
     kw: 325
+    locationId: "20295"
   - name: Shoreline, WA
     lat: 47.7558
     lon: -122.344
     stalls: 12
     kw: 325
+    locationId: "32902"
   - name: Spokane, WA
     lat: 47.5905
     lon: -117.562
     stalls: 8
     kw: 250
+    locationId: "spokanewashingsupercharger"
   - name: Tukwila, WA - Southcenter Pkwy
     lat: 47.4474
     lon: -122.264
     stalls: 16
     kw: 250
+    locationId: "36132"
   - name: Tukwila, WA - Strander Blvd
     lat: 47.4553
     lon: -122.257
     stalls: 16
     kw: 250
+    locationId: "TukwilaWAsupercharger"
   - name: Arvada, CO
     lat: 39.7975
     lon: -105.079
     stalls: 12
     kw: 325
+    locationId: "403408"
   - name: Aurora, CO - E Mississippi Ave
     lat: 39.6971
     lon: -104.826
     stalls: 16
     kw: 325
+    locationId: "35123"
   - name: Aurora, CO
     lat: 39.6666
     lon: -104.863
     stalls: 16
     kw: 325
+    locationId: "404915"
   - name: Boulder, CO - 28th St
     lat: 40.0316
     lon: -105.257
     stalls: 8
     kw: 250
+    locationId: "18997"
   - name: Boulder, CO
     lat: 40.0203
     lon: -105.257
     stalls: 10
     kw: 150
+    locationId: "bouldercosupercharger"
   - name: Castle Rock, CO
     lat: 39.408
     lon: -104.863
     stalls: 16
     kw: 325
+    locationId: "26628"
   - name: Colorado Springs, CO - Forest Bluffs View
     lat: 38.9657
     lon: -104.785
     stalls: 16
     kw: 250
+    locationId: "31117"
   - name: Colorado Springs, CO - E Tyler St
     lat: 38.871
     lon: -104.822
     stalls: 12
     kw: 325
+    locationId: "416259"
   - name: Colorado Springs, CO
     lat: 38.8376
     lon: -104.825
     stalls: 8
     kw: 150
+    locationId: "coloradospringssupercharger"
   - name: Denver, CO
     lat: 39.7751
     lon: -104.795
     stalls: 6
     kw: 150
+    locationId: "denversupercharger"
   - name: Denver, CO - Pontiac St
     lat: 39.7179
     lon: -104.906
     stalls: 16
     kw: 250
+    locationId: "DenverCOEastsupercharger"
   - name: Denver, CO - E 45th Ave
     lat: 39.7783
     lon: -104.848
     stalls: 8
     kw: 250
+    locationId: "DenverCOQ322"
   - name: Edgewater, CO
     lat: 39.7482
     lon: -105.058
     stalls: 8
     kw: 250
+    locationId: "29612"
   - name: Centennial, CO
     lat: 39.5672
     lon: -104.878
     stalls: 12
     kw: 250
+    locationId: "centennialcosupercharger"
   - name: Estes Park, CO
     lat: 40.3838
     lon: -105.52
     stalls: 7
     kw: 150
-  - name: "[HiON EV] Greenwood Village, CO - E Orchard Blvd"
-    lat: 39.6092
-    lon: -104.902
-    stalls: 4
-    kw: 325
+    locationId: "estesparksupercharger"
   - name: Greenwood Village, CO
     lat: 39.592
     lon: -104.878
     stalls: 12
     kw: 325
+    locationId: "425553"
   - name: Highlands Ranch, CO
     lat: 39.5481
     lon: -105.005
     stalls: 16
     kw: 325
+    locationId: "58699"
   - name: Lakewood, CO
     lat: 39.7337
     lon: -105.154
     stalls: 16
     kw: 250
+    locationId: "lakewoodwcosupercharger"
   - name: Lakewood, CO - S Wadsworth Blvd
     lat: 39.6185
     lon: -105.092
     stalls: 12
     kw: 250
+    locationId: "400716"
   - name: Lakewood, CO - W Alaska Dr
     lat: 39.71
     lon: -105.075
     stalls: 12
     kw: 325
+    locationId: "407909"
   - name: Lone Tree, CO - Park Meadows Center Drive
     lat: 39.5627
     lon: -104.873
     stalls: 10
     kw: 150
+    locationId: "lonetreesupercharger"
   - name: Longmont, CO
     lat: 40.1531
     lon: -105.107
     stalls: 12
     kw: 325
+    locationId: "402055"
   - name: Monument, CO
     lat: 39.0923
     lon: -104.853
     stalls: 8
     kw: 250
+    locationId: "MonumentCOsupercharger"
   - name: Northglenn, CO
     lat: 39.8894
     lon: -104.99
     stalls: 16
     kw: 250
+    locationId: "401970"
   - name: Pueblo, CO
     lat: 38.2672
     lon: -104.61
     stalls: 12
     kw: 250
+    locationId: "PuebloCOSupercharger"
   - name: Superior, CO - S Marshall Rd
     lat: 39.9548
     lon: -105.165
     stalls: 16
     kw: 250
+    locationId: "superiorcosouthmarshallroadsupercharging"
   - name: Thornton, CO
     lat: 39.9147
     lon: -104.987
     stalls: 8
     kw: 250
+    locationId: "thortoncosupercharger"
   - name: Trinidad, CO
     lat: 37.1341
     lon: -104.519
     stalls: 9
     kw: 250
+    locationId: "trinidadsupercharger"
   - name: Westminster, CO
     lat: 39.8321
     lon: -105.024
     stalls: 8
     kw: 250
+    locationId: "WestminsterCOsupercharger"
   - name: Belgrade, MT
     lat: 45.7732
     lon: -111.199
     stalls: 8
     kw: 250
+    locationId: "18998"
   - name: Bozeman, MT
     lat: 45.7
     lon: -111.063
     stalls: 4
     kw: 150
+    locationId: "bozemansupercharger"
   - name: Butte, MT - Grizzly Trl
     lat: 46.0052
     lon: -112.611
     stalls: 8
     kw: 250
+    locationId: "19008"
   - name: Butte, MT
     lat: 45.9812
     lon: -112.507
     stalls: 6
     kw: 150
+    locationId: "buttesupercharger"
   - name: Deer Lodge, MT
     lat: 46.4126
     lon: -112.725
     stalls: 8
     kw: 500
+    locationId: "477611"
   - name: Big Sky, MT
     lat: 45.2608
     lon: -111.306
     stalls: 8
     kw: 150
+    locationId: "bigskymtsupercharger"
   - name: West Yellowstone, MT
     lat: 44.656
     lon: -111.099
     stalls: 8
     kw: 150
+    locationId: "westyellowstonesupercharger"
   - name: Clayton, NM
     lat: 36.4495
     lon: -103.182
     stalls: 8
     kw: 250
+    locationId: "ClaytonNMsupercharger"
   - name: Raton, NM
     lat: 36.8802
     lon: -104.439
     stalls: 12
     kw: 325
+    locationId: "4003014"
   - name: Abilene, TX
     lat: 32.4062
     lon: -99.7668
     stalls: 12
     kw: 325
+    locationId: "33908"
   - name: Amarillo, TX - E Interstate 40
     lat: 35.1933
     lon: -101.745
     stalls: 12
     kw: 250
+    locationId: "AmarilloTXSupercharger"
   - name: Amarillo, TX - I-40
     lat: 35.1918
     lon: -101.722
     stalls: 20
     kw: 325
+    locationId: "58900"
   - name: Amarillo, TX
     lat: 35.189
     lon: -101.931
     stalls: 8
     kw: 150
+    locationId: "amarillosupercharger"
   - name: Amarillo, TX - River Rd
     lat: 35.2646
     lon: -101.831
     stalls: 12
     kw: 325
+    locationId: "26828"
   - name: Austin, TX - Spirit of Texas Dr
     lat: 30.2105
     lon: -97.6666
     stalls: 20
     kw: 325
+    locationId: "58767"
   - name: Austin, TX - S Congress Ave
     lat: 30.2477
     lon: -97.7501
     stalls: 8
     kw: 250
+    locationId: "AustinTXCentralsupercharger"
   - name: Austin, TX - Frontage Rd
     lat: 30.1629
     lon: -97.7921
     stalls: 12
     kw: 250
+    locationId: "AustinTXSouthsupercharger"
   - name: Austin, TX - 5601 Brodie Ln
     lat: 30.2262
     lon: -97.822
     stalls: 8
     kw: 250
+    locationId: "AustinTXSupercharger10"
   - name: Austin, TX - Research Blvd
     lat: 30.3893
     lon: -97.7397
     stalls: 18
     kw: 72
+    locationId: "austintxresearchsupercharger"
   - name: Austin, TX - N Mopac Expy
     lat: 30.3904
     lon: -97.733
     stalls: 24
     kw: 325
+    locationId: "32765"
   - name: Austin, TX - E 41st St
     lat: 30.2987
     lon: -97.7196
     stalls: 16
     kw: 325
+    locationId: "32768"
   - name: Austin, TX
     lat: 30.3293
     lon: -97.7063
     stalls: 8
     kw: 150
+    locationId: "austintxfrontagerdsupercharger"
   - name: Austin, TX - Century Oaks Terrace
     lat: 30.4025
     lon: -97.7247
     stalls: 16
     kw: 72
+    locationId: "austintxcenturyoakssupercharger"
   - name: Austin, TX - S Lamar Blvd
     lat: 30.2334
     lon: -97.7929
     stalls: 12
     kw: 250
+    locationId: "20241"
   - name: Austin, TX - FM 969
     lat: 30.2548
     lon: -97.6051
     stalls: 12
     kw: 250
+    locationId: "austintxfm969supercharger"
   - name: Austin, TX - W Canyon Ridge Dr
     lat: 30.4036
     lon: -97.6733
     stalls: 16
     kw: 250
+    locationId: "32767"
   - name: Austin, TX - E Ben White Blvd
     lat: 30.2149
     lon: -97.7421
     stalls: 16
     kw: 250
+    locationId: "32766"
   - name: Austin, TX - E Stassney Ln
     lat: 30.2001
     lon: -97.7672
     stalls: 16
     kw: 250
+    locationId: "403157"
   - name: Austin, TX - W Slaughter Ln
     lat: 30.2023
     lon: -97.876
     stalls: 8
     kw: 325
+    locationId: "32763"
   - name: Bee Cave, TX
     lat: 30.3037
     lon: -97.9418
     stalls: 8
     kw: 250
+    locationId: "BeeCaveTXSupercharger"
   - name: Cedar Park, TX
     lat: 30.5257
     lon: -97.8194
     stalls: 12
     kw: 250
+    locationId: "CedarParkTXSupercharger"
   - name: Cedar Park, TX - E Whitestone Blvd
     lat: 30.5338
     lon: -97.7843
     stalls: 11
     kw: 325
+    locationId: "58811"
   - name: Clyde, TX
     lat: 32.4174
     lon: -99.5266
     stalls: 20
     kw: 250
+    locationId: "ClydeTXQ322"
   - name: Del Valle, TX
     lat: 30.1724
     lon: -97.6304
     stalls: 8
     kw: 250
+    locationId: "DelValleTXSupercharger"
   - name: Lubbock (SC), TX
     lat: 33.5209
     lon: -101.962
     stalls: 4
     kw: 250
+    locationId: "lubbocksupercharger"
   - name: Lubbock, TX - University Ave
     lat: 33.5277
     lon: -101.871
     stalls: 16
     kw: 325
+    locationId: "402621"
   - name: Plainview, TX
     lat: 34.1888
     lon: -101.749
     stalls: 8
     kw: 250
+    locationId: "27102"
   - name: Post, TX
     lat: 33.2001
     lon: -101.383
     stalls: 8
     kw: 250
+    locationId: "27050"
   - name: Round Rock, TX
     lat: 30.5097
     lon: -97.6877
     stalls: 16
     kw: 250
+    locationId: "roundrocktxsupercharger"
   - name: Round Rock, TX - University Blvd
     lat: 30.5623
     lon: -97.6897
     stalls: 20
     kw: 325
+    locationId: "58802"
   - name: West Lake Hills, TX
     lat: 30.2898
     lon: -97.8275
     stalls: 8
     kw: 250
+    locationId: "westlakehillstxsupercharger"
   - name: Jackson, WY
     lat: 43.4639
     lon: -110.795
     stalls: 8
     kw: 150
+    locationId: "jacksonwysupercharger"
   - name: Rawlins, WY
     lat: 41.7908
     lon: -107.21
     stalls: 8
     kw: 150
+    locationId: "rawlinssupercharger"
+
 chargerGaps:
   - miles: 249.2
     from: Rawlins, WY

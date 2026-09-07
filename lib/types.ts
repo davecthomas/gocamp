@@ -101,6 +101,13 @@ export interface Charger {
   lon: number;
   stalls: number;
   kw: number;
+  /**
+   * Tesla's own id for the site, which addresses its page under
+   * /findus/location/supercharger/. Both the slug and the numeric form resolve.
+   * Kept rather than a copied address, since hours, amenities and the address
+   * itself change and Tesla's page is the copy that stays current.
+   */
+  locationId: string;
 }
 
 /** Measured distance between two consecutive chargers along the route. */

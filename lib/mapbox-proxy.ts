@@ -38,6 +38,32 @@ const ALLOWED_QUERY = new Set([
   'filter',
 ]);
 
+/** Path prefix of the endpoint Mapbox uses to account for a map load. */
+const SESSION_PATH_PREFIX = '/map-sessions/';
+
+/**
+ * Cache-control for a proxied response.
+ *
+ * The session call is an accounting event, not a resource. GL JS stores any
+ * response carrying a max-age over its seven-minute floor, keyed on the URL with
+ * the query stripped, and serves the next map load from that store without
+ * calling out. A cacheable answer therefore under-reports map loads, which is
+ * the reporting this endpoint exists to do.
+ */
+export function cacheControlFor(pathname: string): string {
+  if (pathname.startsWith(SESSION_PATH_PREFIX)) return 'no-store';
+  return 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400';
+}
+
+/**
+ * Statuses that must carry no body. Handing Response a body with one of these
+ * throws, including an empty ArrayBuffer, which would turn a successful upstream
+ * call into a 502.
+ */
+export function isNullBodyStatus(status: number): boolean {
+  return status === 204 || status === 205 || status === 304;
+}
+
 export type ResolveResult = { ok: true; url: URL } | { ok: false; reason: string };
 
 /**

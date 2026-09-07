@@ -44,8 +44,9 @@ function routeSessionCallThroughProxy() {
     const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
     if (!url.startsWith(MAPBOX_SESSION_PREFIX)) return inner(input, init);
     const target = proxied(url);
-    // A Request carries method and headers the plain URL form would drop.
-    return input instanceof Request ? inner(new Request(target, input)) : inner(target, init);
+    // A Request carries method and headers the plain URL form would drop; init
+    // still has to reach fetch, since a caller may pass both.
+    return input instanceof Request ? inner(new Request(target, input), init) : inner(target, init);
   };
 }
 

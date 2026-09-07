@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
   MAPBOX_SESSION_PREFIX,
+  cacheControlFor,
+  isNullBodyStatus,
   proxiedTileTemplate,
   resolveUpstream,
   rewriteTileJson,
@@ -210,6 +212,31 @@ describe('mapbox proxy session call', () => {
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     expect(result.url.searchParams.get('sku')).toBe('abc123');
+  });
+
+  it('refuses to let the accounting call be cached', () => {
+    // GL JS stores any response with a usable max-age under the unqueried URL and
+    // serves the next map load from it, so a cacheable answer under-reports loads.
+    expect(cacheControlFor('/map-sessions/v1')).toBe('no-store');
+  });
+
+  it('leaves every other path cacheable', () => {
+    for (const path of ['/v4/mapbox.mapbox-streets-v8/6/12/23.vector.pbf', '/styles/v1/mapbox/streets-v12']) {
+      expect(cacheControlFor(path), path).toContain('max-age=3600');
+      expect(cacheControlFor(path), path).not.toContain('no-store');
+    }
+  });
+
+  it('sends no body on a status that forbids one, so a success is not answered 502', () => {
+    for (const status of [204, 205, 304]) {
+      expect(isNullBodyStatus(status), String(status)).toBe(true);
+      // Guards the reason the branch exists: Response refuses a body on these.
+      expect(() => new Response(new ArrayBuffer(0), { status })).toThrow();
+      expect(() => new Response(null, { status })).not.toThrow();
+    }
+    for (const status of [200, 206, 400, 503]) {
+      expect(isNullBodyStatus(status), String(status)).toBe(false);
+    }
   });
 
   it('names a prefix on a host and path the proxy already allows', () => {

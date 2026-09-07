@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { proxiedTileTemplate, resolveUpstream, rewriteTileJson, scrubToken } from '../lib/mapbox-proxy';
+import {
+  MAPBOX_SESSION_PREFIX,
+  cacheControlFor,
+  isNullBodyStatus,
+  proxiedTileTemplate,
+  resolveUpstream,
+  rewriteTileJson,
+  scrubToken,
+} from '../lib/mapbox-proxy';
 
 const TOKEN = 'pk.test-token-value';
 const STYLE = 'https://api.mapbox.com/styles/v1/mapbox/outdoors-v12';
@@ -178,5 +186,61 @@ describe('mapbox proxy TileJSON rewriting', () => {
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     expect(result.url.searchParams.get('secure')).toBe('1');
+  });
+});
+
+/**
+ * Mapbox accounts for map loads through the session endpoint. GL JS fetches it
+ * without consulting transformRequest, so the client redirects it by prefix; the
+ * proxy has to accept what that produces and substitute the real token.
+ */
+describe('mapbox proxy session call', () => {
+  const sessionUrl = `${MAPBOX_SESSION_PREFIX}v1?sku=abc123&access_token=proxied`;
+
+  it('accepts the session endpoint and substitutes the real token', () => {
+    const result = resolveUpstream(sessionUrl, TOKEN);
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.url.hostname).toBe('api.mapbox.com');
+    expect(result.url.pathname).toBe('/map-sessions/v1');
+    expect(result.url.searchParams.get('access_token')).toBe(TOKEN);
+    expect(result.url.toString()).not.toContain('access_token=proxied');
+  });
+
+  it('carries the sku through, since the session call is what it accounts for', () => {
+    const result = resolveUpstream(sessionUrl, TOKEN);
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.url.searchParams.get('sku')).toBe('abc123');
+  });
+
+  it('refuses to let the accounting call be cached', () => {
+    // GL JS stores any response with a usable max-age under the unqueried URL and
+    // serves the next map load from it, so a cacheable answer under-reports loads.
+    expect(cacheControlFor('/map-sessions/v1')).toBe('no-store');
+  });
+
+  it('leaves every other path cacheable', () => {
+    for (const path of ['/v4/mapbox.mapbox-streets-v8/6/12/23.vector.pbf', '/styles/v1/mapbox/streets-v12']) {
+      expect(cacheControlFor(path), path).toContain('max-age=3600');
+      expect(cacheControlFor(path), path).not.toContain('no-store');
+    }
+  });
+
+  it('sends no body on a status that forbids one, so a success is not answered 502', () => {
+    for (const status of [204, 205, 304]) {
+      expect(isNullBodyStatus(status), String(status)).toBe(true);
+      // Guards the reason the branch exists: Response refuses a body on these.
+      expect(() => new Response(new ArrayBuffer(0), { status })).toThrow();
+      expect(() => new Response(null, { status })).not.toThrow();
+    }
+    for (const status of [200, 206, 400, 503]) {
+      expect(isNullBodyStatus(status), String(status)).toBe(false);
+    }
+  });
+
+  it('names a prefix on a host and path the proxy already allows', () => {
+    expect(MAPBOX_SESSION_PREFIX.startsWith('https://api.mapbox.com/')).toBe(true);
+    expect(resolveUpstream(`${MAPBOX_SESSION_PREFIX}v1`, TOKEN)).toMatchObject({ ok: true });
   });
 });

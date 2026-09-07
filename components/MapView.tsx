@@ -4,6 +4,7 @@ import mapboxgl from 'mapbox-gl';
 import { useEffect, useRef, useState } from 'react';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { fmtDate, fmtHours } from '@/lib/format';
+import { MAPBOX_SESSION_PREFIX } from '@/lib/mapbox-proxy';
 import { legHours } from '@/lib/trip';
 import type { Scenario } from '@/lib/types';
 import { weatherFor } from '@/lib/weather';
@@ -17,6 +18,37 @@ import type { TripState } from './useTrip';
  * throws inside the worker and the tile request never leaves the browser.
  */
 const proxied = (url: string) => `${window.location.origin}/api/mapbox?u=${encodeURIComponent(url)}`;
+
+/**
+ * Sends GL JS's map-load session call through the proxy.
+ *
+ * Mapbox uses that call to account for map loads. GL JS builds its URL from
+ * config.API_URL + config.SESSION_PATH and hands it to fetch directly, without
+ * consulting transformRequest, so it goes out carrying the placeholder token and
+ * fails — map loads go unaccounted while proxied tiles bill the real token. GL JS
+ * exposes no hook for it, so the one request is redirected at the fetch boundary.
+ * Every other request is passed through untouched.
+ *
+ * Installed once per page. Nulling config.EVENTS_URL would also stop the failures,
+ * by stopping the call itself, but that suppresses the accounting rather than
+ * fixing it and sits inside code Mapbox's terms forbid modifying.
+ */
+let sessionCallRouted = false;
+
+function routeSessionCallThroughProxy() {
+  if (sessionCallRouted || typeof window === 'undefined') return;
+  sessionCallRouted = true;
+
+  const inner = window.fetch.bind(window);
+  window.fetch = (input, init) => {
+    const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
+    if (!url.startsWith(MAPBOX_SESSION_PREFIX)) return inner(input, init);
+    const target = proxied(url);
+    // A Request carries method and headers the plain URL form would drop; init
+    // still has to reach fetch, since a caller may pass both.
+    return input instanceof Request ? inner(new Request(target, input), init) : inner(target, init);
+  };
+}
 
 const ROUTE_COLOR = '#2c5424';
 const BRANCH_COLOR = '#1f5978';
@@ -102,6 +134,8 @@ export function MapView({ scenario, trip }: { scenario: Scenario; trip: TripStat
     // GL JS requires a token to be set. The proxy replaces it on every request,
     // so this placeholder never reaches Mapbox and grants nothing.
     mapboxgl.accessToken = 'proxied';
+
+    routeSessionCallThroughProxy();
 
     const startStyle = MAP_STYLES.find((s) => s.id === DEFAULT_STYLE)!.url;
     const instance = new mapboxgl.Map({

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { resolveUpstream, rewriteTileJson } from '@/lib/mapbox-proxy';
+import { cacheControlFor, isNullBodyStatus, resolveUpstream, rewriteTileJson } from '@/lib/mapbox-proxy';
 
 export const runtime = 'nodejs';
 
@@ -29,8 +29,14 @@ export async function GET(request: Request) {
     });
     const contentType = upstream.headers.get('content-type') ?? '';
     const headers = new Headers();
-    headers.set('cache-control', 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400');
+    headers.set('cache-control', cacheControlFor(resolved.url.pathname));
     if (contentType) headers.set('content-type', contentType);
+
+    // A body of any kind is refused on these statuses, an empty one included, so
+    // a successful upstream call would otherwise be caught below and answered 502.
+    if (isNullBodyStatus(upstream.status)) {
+      return new NextResponse(null, { status: upstream.status, headers });
+    }
 
     // A TileJSON body names the tile URLs and Mapbox writes the account token into
     // every one of them, so a text body is rewritten rather than streamed (ADR-0001).

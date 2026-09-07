@@ -106,12 +106,29 @@ function chargerIconImage(): ImageData | null {
   return ctx.getImageData(0, 0, size, size);
 }
 
-/** Both charger panels, the hover one and the one a click pins open, say this. */
-function chargerPopupHTML(charger: { name: string; stalls: number; kw: number }): string {
-  return [
+type ChargerProps = { name: string; stalls: number; kw: number; locationId: string };
+
+/**
+ * The charger panels. The hover one is read-only, since its content ignores
+ * pointer events so it cannot swallow the click underneath it, and links it
+ * cannot follow would only be a tease. A click pins the panel and gets them.
+ */
+function chargerPopupHTML(charger: ChargerProps, at: [number, number], withLinks: boolean): string {
+  const rows = [
     `<h5>${charger.name}</h5>`,
     `<div style="font-size:.75rem">${charger.stalls} stalls · ${charger.kw} kW</div>`,
-  ].join('');
+  ];
+  if (withLinks) {
+    const tesla = `https://www.tesla.com/findus/location/supercharger/${charger.locationId}`;
+    const directions = `https://www.google.com/maps/dir/?api=1&destination=${at[1]},${at[0]}`;
+    rows.push(
+      `<div class="pop-links" style="margin-top:.45rem">` +
+        `<a href="${tesla}" target="_blank" rel="noopener">Hours &amp; amenities ↗</a>` +
+        `<a href="${directions}" target="_blank" rel="noopener">Directions ↗</a>` +
+        `</div>`,
+    );
+  }
+  return rows.join('');
 }
 
 function stopPopupHTML(scenario: Scenario, trip: TripState, id: string, label: string): string {
@@ -268,7 +285,7 @@ export function MapView({ scenario, trip }: { scenario: Scenario; trip: TripStat
           type: 'FeatureCollection',
           features: scenario.chargers.map((c) => ({
             type: 'Feature' as const,
-            properties: { name: c.name, stalls: c.stalls, kw: c.kw },
+            properties: { name: c.name, stalls: c.stalls, kw: c.kw, locationId: c.locationId },
             geometry: { type: 'Point' as const, coordinates: [c.lon, c.lat] },
           })),
         },
@@ -325,11 +342,9 @@ export function MapView({ scenario, trip }: { scenario: Scenario; trip: TripStat
           // A pinned panel already says this. Adding the hover one would stack a
           // second panel on the same point and bury the pinned panel's close button.
           if (pinnedCharger.current) return;
-          const p = f.properties as { name: string; stalls: number; kw: number };
-          hover
-            .setLngLat(f.geometry.coordinates as [number, number])
-            .setHTML(chargerPopupHTML(p))
-            .addTo(instance);
+          const p = f.properties as ChargerProps;
+          const at = f.geometry.coordinates as [number, number];
+          hover.setLngLat(at).setHTML(chargerPopupHTML(p, at, false)).addTo(instance);
         });
         instance.on('mouseleave', 'chargers', () => {
           instance.getCanvas().style.cursor = '';
@@ -347,12 +362,13 @@ export function MapView({ scenario, trip }: { scenario: Scenario; trip: TripStat
           ];
           const f = instance.queryRenderedFeatures(box, { layers: ['chargers'] })[0];
           if (!f || f.geometry.type !== 'Point') return;
-          const p = f.properties as { name: string; stalls: number; kw: number };
+          const p = f.properties as ChargerProps;
+          const at = f.geometry.coordinates as [number, number];
           hover.remove();
           pinnedCharger.current?.remove();
           const pinned = new mapboxgl.Popup({ offset: CHARGER_POPUP_OFFSET })
-            .setLngLat(f.geometry.coordinates as [number, number])
-            .setHTML(chargerPopupHTML(p))
+            .setLngLat(at)
+            .setHTML(chargerPopupHTML(p, at, true))
             .addTo(instance);
           pinned.on('close', () => {
             if (pinnedCharger.current === pinned) pinnedCharger.current = null;

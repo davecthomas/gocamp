@@ -1,0 +1,3 @@
+# >>> agentmemory (managed block; do not edit) >>>
+.agents/memory/notes/*.md merge=union
+# <<< agentmemory <<<

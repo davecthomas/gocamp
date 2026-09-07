@@ -626,6 +626,12 @@ footer{margin-top:2.5rem; padding-top:1.2rem; border-top:1px solid var(--line); 
 .mapboxgl-ctrl-attrib{background:var(--paper-raised)!important;}
 .mapboxgl-ctrl-attrib a{color:var(--pine)!important;}
 .pop-links a{font-size:.72rem; font-weight:600; color:var(--pine); margin-right:.6rem; white-space:nowrap;}
+/* Four booking links on one nowrap line ran past the panel and over the map. The
+   row wraps instead; each link still keeps its own words together. */
+.mapboxgl-popup .pop-links{display:flex; flex-wrap:wrap; gap:.3rem .7rem;}
+.mapboxgl-popup .pop-links a{margin-right:0;}
+/* A hover panel that takes pointer events steals the click aimed at the icon under it. */
+.mapboxgl-popup.popup-passthrough .mapboxgl-popup-content{pointer-events:none;}
 
 /* stop hero photos */
 .card .hero{margin:-0.95rem -1.1rem 0.8rem; position:relative;}

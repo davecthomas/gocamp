@@ -77,6 +77,8 @@ const DEFAULT_STYLE: MapStyleId = 'streets';
 const CHARGER_ICON = 'charger-bolt';
 /** A click within this many pixels of a charger counts as hitting it. */
 const CHARGER_HIT_PX = 12;
+/** Clear of the icon, which is 22px tall at the zooms the labels appear. */
+const CHARGER_POPUP_OFFSET = 16;
 
 /**
  * A bolt on a disc, drawn rather than fetched so it needs no sprite from the
@@ -307,7 +309,15 @@ export function MapView({ scenario, trip }: { scenario: Scenario; trip: TripStat
       if (firstLoad) {
         firstLoad = false;
 
-        const hover = new mapboxgl.Popup({ closeButton: false, closeOnClick: false, offset: 10 });
+        const hover = new mapboxgl.Popup({
+          closeButton: false,
+          closeOnClick: false,
+          offset: CHARGER_POPUP_OFFSET,
+          // .mapboxgl-popup-content sets pointer-events:auto, so this panel sat over
+          // the icon and took the mousedown that was meant for the map. The class
+          // turns that off; without it a charger cannot be clicked at all.
+          className: 'popup-passthrough',
+        });
         instance.on('mouseenter', 'chargers', (e) => {
           instance.getCanvas().style.cursor = 'pointer';
           const f = e.features?.[0];
@@ -340,7 +350,7 @@ export function MapView({ scenario, trip }: { scenario: Scenario; trip: TripStat
           const p = f.properties as { name: string; stalls: number; kw: number };
           hover.remove();
           pinnedCharger.current?.remove();
-          const pinned = new mapboxgl.Popup({ offset: 10 })
+          const pinned = new mapboxgl.Popup({ offset: CHARGER_POPUP_OFFSET })
             .setLngLat(f.geometry.coordinates as [number, number])
             .setHTML(chargerPopupHTML(p))
             .addTo(instance);

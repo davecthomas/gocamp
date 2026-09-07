@@ -72,6 +72,15 @@ export function resolveUpstream(target: string | null, token: string): ResolveRe
 /** Path the browser calls. Tile templates in a rewritten TileJSON point back here. */
 export const PROXY_PATH = '/api/mapbox';
 
+/**
+ * The session endpoint GL JS calls to account for a map load.
+ *
+ * It builds this URL from its own config and fetches it directly, so transformRequest
+ * never sees it and it has to be recognised by prefix instead. Already covered by
+ * ALLOWED_PREFIXES, so the proxy answers it once the request arrives.
+ */
+export const MAPBOX_SESSION_PREFIX = 'https://api.mapbox.com/map-sessions/';
+
 /** Hosts Mapbox names inside a TileJSON body. The legacy a/b shards are http-only. */
 const TILE_HOSTS = /^(?:[a-d]\.)?tiles\.mapbox\.com$|^api\.mapbox\.com$/;
 

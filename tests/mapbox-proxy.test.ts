@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { proxiedTileTemplate, resolveUpstream, rewriteTileJson, scrubToken } from '../lib/mapbox-proxy';
+import {
+  MAPBOX_SESSION_PREFIX,
+  proxiedTileTemplate,
+  resolveUpstream,
+  rewriteTileJson,
+  scrubToken,
+} from '../lib/mapbox-proxy';
 
 const TOKEN = 'pk.test-token-value';
 const STYLE = 'https://api.mapbox.com/styles/v1/mapbox/outdoors-v12';
@@ -178,5 +184,36 @@ describe('mapbox proxy TileJSON rewriting', () => {
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     expect(result.url.searchParams.get('secure')).toBe('1');
+  });
+});
+
+/**
+ * Mapbox accounts for map loads through the session endpoint. GL JS fetches it
+ * without consulting transformRequest, so the client redirects it by prefix; the
+ * proxy has to accept what that produces and substitute the real token.
+ */
+describe('mapbox proxy session call', () => {
+  const sessionUrl = `${MAPBOX_SESSION_PREFIX}v1?sku=abc123&access_token=proxied`;
+
+  it('accepts the session endpoint and substitutes the real token', () => {
+    const result = resolveUpstream(sessionUrl, TOKEN);
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.url.hostname).toBe('api.mapbox.com');
+    expect(result.url.pathname).toBe('/map-sessions/v1');
+    expect(result.url.searchParams.get('access_token')).toBe(TOKEN);
+    expect(result.url.toString()).not.toContain('access_token=proxied');
+  });
+
+  it('carries the sku through, since the session call is what it accounts for', () => {
+    const result = resolveUpstream(sessionUrl, TOKEN);
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.url.searchParams.get('sku')).toBe('abc123');
+  });
+
+  it('names a prefix on a host and path the proxy already allows', () => {
+    expect(MAPBOX_SESSION_PREFIX.startsWith('https://api.mapbox.com/')).toBe(true);
+    expect(resolveUpstream(`${MAPBOX_SESSION_PREFIX}v1`, TOKEN)).toMatchObject({ ok: true });
   });
 });

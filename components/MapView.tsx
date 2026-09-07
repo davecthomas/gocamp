@@ -74,6 +74,14 @@ const MAP_STYLES = [
 type MapStyleId = (typeof MAP_STYLES)[number]['id'];
 const DEFAULT_STYLE: MapStyleId = 'streets';
 
+/** Both charger panels, the hover one and the one a click pins open, say this. */
+function chargerPopupHTML(charger: { name: string; stalls: number; kw: number }): string {
+  return [
+    `<h5>${charger.name}</h5>`,
+    `<div style="font-size:.75rem">${charger.stalls} stalls · ${charger.kw} kW</div>`,
+  ].join('');
+}
+
 function stopPopupHTML(scenario: Scenario, trip: TripState, id: string, label: string): string {
   // The branch stop stays on the map even when the branch toggle is off, so its
   // leg may not be in trip.legs; fall back to the scenario's branch leg for it.
@@ -83,6 +91,9 @@ function stopPopupHTML(scenario: Scenario, trip: TripState, id: string, label: s
   const date = trip.schedule.dates[leg.id];
   const weather = weatherFor(leg, date);
   const rows: string[] = [
+    leg.hero
+      ? `<span class="pop-hero"><img src="${leg.hero.src}" alt="${leg.title}" width="${leg.hero.width}" height="${leg.hero.height}" loading="lazy" decoding="async"></span>`
+      : '',
     `<h5>${leg.title}</h5>`,
     `<div style="font-size:.7rem;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em">${leg.badge.text}</div>`,
     `<div style="font-size:.75rem;margin-top:.3rem">Elevation ${leg.elevation.endFt.toLocaleString()} ft${
@@ -262,12 +273,25 @@ export function MapView({ scenario, trip }: { scenario: Scenario; trip: TripStat
           const p = f.properties as { name: string; stalls: number; kw: number };
           hover
             .setLngLat(f.geometry.coordinates as [number, number])
-            .setHTML(`<b>${p.name}</b><br>${p.stalls} stalls · ${p.kw} kW`)
+            .setHTML(chargerPopupHTML(p))
             .addTo(instance);
         });
         instance.on('mouseleave', 'chargers', () => {
           instance.getCanvas().style.cursor = '';
           hover.remove();
+        });
+
+        // Hover alone leaves a charger unreachable on a touch screen, and gives a
+        // mouse no way to hold the panel still. A click opens a popup that stays.
+        instance.on('click', 'chargers', (e) => {
+          const f = e.features?.[0];
+          if (!f || f.geometry.type !== 'Point') return;
+          const p = f.properties as { name: string; stalls: number; kw: number };
+          hover.remove();
+          new mapboxgl.Popup({ offset: 10 })
+            .setLngLat(f.geometry.coordinates as [number, number])
+            .setHTML(chargerPopupHTML(p))
+            .addTo(instance);
         });
 
         for (const stop of scenario.mapStops) {

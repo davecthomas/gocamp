@@ -74,6 +74,36 @@ const MAP_STYLES = [
 type MapStyleId = (typeof MAP_STYLES)[number]['id'];
 const DEFAULT_STYLE: MapStyleId = 'streets';
 
+const CHARGER_ICON = 'charger-bolt';
+/** A click within this many pixels of a charger counts as hitting it. */
+const CHARGER_HIT_PX = 12;
+
+/**
+ * A bolt on a disc, drawn rather than fetched so it needs no sprite from the
+ * basemap and survives a style swap. Returned at twice its display size and
+ * registered with pixelRatio 2, so it stays sharp on a retina screen.
+ */
+function chargerIconImage(): ImageData | null {
+  const size = 44;
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return null;
+
+  ctx.beginPath();
+  ctx.arc(size / 2, size / 2, 18, 0, Math.PI * 2);
+  ctx.fillStyle = CHARGER_COLOR;
+  ctx.fill();
+  ctx.lineWidth = 3.5;
+  ctx.strokeStyle = '#ffffff';
+  ctx.stroke();
+
+  ctx.fillStyle = '#ffffff';
+  ctx.fill(new Path2D('M25.2 9.5 L14 24.8 h6.1 L18.6 34.5 L30 19.2 h-6.1 z'));
+  return ctx.getImageData(0, 0, size, size);
+}
+
 /** Both charger panels, the hover one and the one a click pins open, say this. */
 function chargerPopupHTML(charger: { name: string; stalls: number; kw: number }): string {
   return [
@@ -188,6 +218,11 @@ export function MapView({ scenario, trip }: { scenario: Scenario; trip: TripStat
         geometry: { type: 'LineString' as const, coordinates: coords.map(([lat, lon]) => [lon, lat]) },
       });
 
+      if (!instance.hasImage(CHARGER_ICON)) {
+        const icon = chargerIconImage();
+        if (icon) instance.addImage(CHARGER_ICON, icon, { pixelRatio: 2 });
+      }
+
       if (!instance.getSource('dem')) {
         instance.addSource('dem', {
           type: 'raster-dem',
@@ -239,15 +274,19 @@ export function MapView({ scenario, trip }: { scenario: Scenario; trip: TripStat
       const visibility = chargersOn.current ? 'visible' : 'none';
       instance.addLayer({
         id: 'chargers',
-        type: 'circle',
+        type: 'symbol',
         source: 'chargers',
-        layout: { visibility },
-        paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 4, 2.6, 8, 5, 12, 8],
-          'circle-color': CHARGER_COLOR,
-          'circle-stroke-color': '#fff',
-          'circle-stroke-width': 1,
-          'circle-opacity': 0.95,
+        layout: {
+          visibility,
+          'icon-image': CHARGER_ICON,
+          // 22px at size 1. The circles this replaced were 5px across at the zoom
+          // the route opens at, which is below anything a finger or a cursor can
+          // reliably land on.
+          'icon-size': ['interpolate', ['linear'], ['zoom'], 4, 0.8, 8, 1, 12, 1.2],
+          // 111 chargers on one line collide constantly. Without these, placement
+          // drops most of them and the route looks like it has almost no charging.
+          'icon-allow-overlap': true,
+          'icon-ignore-placement': true,
         },
       });
       instance.addLayer({
@@ -259,7 +298,7 @@ export function MapView({ scenario, trip }: { scenario: Scenario; trip: TripStat
           visibility,
           'text-field': ['concat', ['get', 'name'], '  ', ['to-string', ['get', 'stalls']], ' stalls'],
           'text-size': 11,
-          'text-offset': [0, 1.1],
+          'text-offset': [0, 1.5],
           'text-anchor': 'top',
         },
         paint: { 'text-color': CHARGER_COLOR, 'text-halo-color': '#ffffff', 'text-halo-width': 1.6 },
@@ -289,8 +328,14 @@ export function MapView({ scenario, trip }: { scenario: Scenario; trip: TripStat
 
         // Hover alone leaves a charger unreachable on a touch screen, and gives a
         // mouse no way to hold the panel still. A click opens a popup that stays.
-        instance.on('click', 'chargers', (e) => {
-          const f = e.features?.[0];
+        instance.on('click', (e) => {
+          if (!chargersOn.current || !instance.getLayer('chargers')) return;
+          const { x, y } = e.point;
+          const box: [[number, number], [number, number]] = [
+            [x - CHARGER_HIT_PX, y - CHARGER_HIT_PX],
+            [x + CHARGER_HIT_PX, y + CHARGER_HIT_PX],
+          ];
+          const f = instance.queryRenderedFeatures(box, { layers: ['chargers'] })[0];
           if (!f || f.geometry.type !== 'Point') return;
           const p = f.properties as { name: string; stalls: number; kw: number };
           hover.remove();

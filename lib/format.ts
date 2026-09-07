@@ -28,3 +28,11 @@ export function toDateInput(date: Date): string {
 }
 
 export const mi = (n: number): string => `${Math.round(n).toLocaleString()} mi`;
+
+/**
+ * Miles where the value can be small. Rounding to whole miles turns two adjacent
+ * chargers into "0 mi", and some really are a few hundred feet apart, so anything
+ * under ten miles keeps a decimal.
+ */
+export const shortMi = (n: number): string =>
+  n < 10 ? `${(Math.round(n * 10) / 10).toFixed(1)} mi` : mi(n);

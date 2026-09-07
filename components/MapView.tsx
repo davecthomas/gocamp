@@ -3,8 +3,9 @@
 import mapboxgl from 'mapbox-gl';
 import { useEffect, useRef, useState } from 'react';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { fmtDate, fmtHours } from '@/lib/format';
+import { fmtDate, fmtHours, shortMi } from '@/lib/format';
 import { MAPBOX_SESSION_PREFIX } from '@/lib/mapbox-proxy';
+import { chargerNeighbours, type ChargerNeighbours } from '@/lib/route';
 import { legHours } from '@/lib/trip';
 import type { Scenario } from '@/lib/types';
 import { weatherFor } from '@/lib/weather';
@@ -119,11 +120,28 @@ type ChargerProps = { name: string; stalls: number; kw: number };
  * a name query, since a Google place id needs a billed Places key and the feed
  * behind this data carries none.
  */
-function chargerPopupHTML(charger: ChargerProps, at: [number, number], withLinks: boolean): string {
+function chargerPopupHTML(
+  charger: ChargerProps,
+  at: [number, number],
+  withLinks: boolean,
+  neighbours: ChargerNeighbours | undefined,
+): string {
   const rows = [
     `<h5>${charger.name}</h5>`,
     `<div style="font-size:.75rem">${charger.stalls} stalls · ${charger.kw} kW</div>`,
   ];
+  // What a driver deciding whether to stop here needs: the reach behind and ahead.
+  const legs = [
+    neighbours?.previous && `${shortMi(neighbours.previous.miles)} from ${neighbours.previous.name}`,
+    neighbours?.next && `${shortMi(neighbours.next.miles)} to ${neighbours.next.name}`,
+  ].filter(Boolean);
+  if (legs.length) {
+    rows.push(
+      `<div style="font-size:.72rem;color:var(--ink-soft);margin-top:.3rem;line-height:1.5">${legs.join(
+        '<br>',
+      )}</div>`,
+    );
+  }
   if (withLinks) {
     const place = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
       `Tesla Supercharger ${charger.name}`,
@@ -207,6 +225,8 @@ export function MapView({ scenario, trip }: { scenario: Scenario; trip: TripStat
     mapboxgl.accessToken = 'proxied';
 
     routeSessionCallThroughProxy();
+
+    const neighbours = chargerNeighbours(scenario);
 
     const startStyle = MAP_STYLES.find((s) => s.id === DEFAULT_STYLE)!.url;
     const instance = new mapboxgl.Map({
@@ -352,7 +372,7 @@ export function MapView({ scenario, trip }: { scenario: Scenario; trip: TripStat
           if (pinnedCharger.current) return;
           const p = f.properties as ChargerProps;
           const at = f.geometry.coordinates as [number, number];
-          hover.setLngLat(at).setHTML(chargerPopupHTML(p, at, false)).addTo(instance);
+          hover.setLngLat(at).setHTML(chargerPopupHTML(p, at, false, neighbours.get(p.name))).addTo(instance);
         });
         instance.on('mouseleave', 'chargers', () => {
           instance.getCanvas().style.cursor = '';
@@ -376,7 +396,7 @@ export function MapView({ scenario, trip }: { scenario: Scenario; trip: TripStat
           pinnedCharger.current?.remove();
           const pinned = new mapboxgl.Popup({ offset: CHARGER_POPUP_OFFSET })
             .setLngLat(at)
-            .setHTML(chargerPopupHTML(p, at, true))
+            .setHTML(chargerPopupHTML(p, at, true, neighbours.get(p.name)))
             .addTo(instance);
           pinned.on('close', () => {
             if (pinnedCharger.current === pinned) pinnedCharger.current = null;

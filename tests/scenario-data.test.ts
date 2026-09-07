@@ -99,15 +99,6 @@ describe('scenario data integrity', () => {
         }
       });
 
-      it('gives every charger a Tesla location id, so the popup link cannot render broken', () => {
-        for (const c of scenario.chargers) {
-          expect(c.locationId, `${c.name} locationId`).toBeTruthy();
-          // Both the slug and the numeric form address a page under
-          // /findus/location/supercharger/; anything else would not.
-          expect(c.locationId, `${c.name} locationId`).toMatch(/^[A-Za-z0-9-]+$/);
-        }
-      });
-
       it('lists Tesla Superchargers only', () => {
         // A bracketed operator prefix is how the upstream feed marks another network.
         for (const c of scenario.chargers) {

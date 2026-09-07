@@ -106,12 +106,18 @@ function chargerIconImage(): ImageData | null {
   return ctx.getImageData(0, 0, size, size);
 }
 
-type ChargerProps = { name: string; stalls: number; kw: number; locationId: string };
+type ChargerProps = { name: string; stalls: number; kw: number };
 
 /**
  * The charger panels. The hover one is read-only, since its content ignores
  * pointer events so it cannot swallow the click underneath it, and links it
  * cannot follow would only be a tease. A click pins the panel and gets them.
+ *
+ * The status link goes to the site's Google place, which is the only one of these
+ * that is live: it carries stalls in use right now, hours, photos and reviews.
+ * Tesla's own page for a site is static by comparison. The place is addressed by
+ * a name query, since a Google place id needs a billed Places key and the feed
+ * behind this data carries none.
  */
 function chargerPopupHTML(charger: ChargerProps, at: [number, number], withLinks: boolean): string {
   const rows = [
@@ -119,11 +125,13 @@ function chargerPopupHTML(charger: ChargerProps, at: [number, number], withLinks
     `<div style="font-size:.75rem">${charger.stalls} stalls · ${charger.kw} kW</div>`,
   ];
   if (withLinks) {
-    const tesla = `https://www.tesla.com/findus/location/supercharger/${charger.locationId}`;
+    const place = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+      `Tesla Supercharger ${charger.name}`,
+    )}`;
     const directions = `https://www.google.com/maps/dir/?api=1&destination=${at[1]},${at[0]}`;
     rows.push(
       `<div class="pop-links" style="margin-top:.45rem">` +
-        `<a href="${tesla}" target="_blank" rel="noopener">Hours &amp; amenities ↗</a>` +
+        `<a href="${place}" target="_blank" rel="noopener">Live status ↗</a>` +
         `<a href="${directions}" target="_blank" rel="noopener">Directions ↗</a>` +
         `</div>`,
     );
@@ -285,7 +293,7 @@ export function MapView({ scenario, trip }: { scenario: Scenario; trip: TripStat
           type: 'FeatureCollection',
           features: scenario.chargers.map((c) => ({
             type: 'Feature' as const,
-            properties: { name: c.name, stalls: c.stalls, kw: c.kw, locationId: c.locationId },
+            properties: { name: c.name, stalls: c.stalls, kw: c.kw },
             geometry: { type: 'Point' as const, coordinates: [c.lon, c.lat] },
           })),
         },

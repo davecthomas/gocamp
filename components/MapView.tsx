@@ -92,7 +92,8 @@ function stopPopupHTML(scenario: Scenario, trip: TripState, id: string, label: s
   const weather = weatherFor(leg, date);
   const rows: string[] = [
     leg.hero
-      ? `<span class="pop-hero"><img src="${leg.hero.src}" alt="${leg.title}" width="${leg.hero.width}" height="${leg.hero.height}" loading="lazy" decoding="async"></span>`
+      ? `<span class="pop-hero"><img src="${leg.hero.src}" alt="${leg.title}" width="${leg.hero.width}" height="${leg.hero.height}" loading="lazy" decoding="async">` +
+        `<small><a href="${leg.hero.sourceUrl}" target="_blank" rel="noopener">${leg.hero.credit}</a> · ${leg.hero.license}</small></span>`
       : '',
     `<h5>${leg.title}</h5>`,
     `<div style="font-size:.7rem;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em">${leg.badge.text}</div>`,
@@ -127,6 +128,8 @@ export function MapView({ scenario, trip }: { scenario: Scenario; trip: TripStat
   const container = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const chargersOn = useRef(true);
+  /** The charger panel a click pinned open, so the layer toggle can clear it. */
+  const pinnedCharger = useRef<mapboxgl.Popup | null>(null);
   const isFirstStyleChange = useRef(true);
   const [failed, setFailed] = useState(false);
   const [chargersVisible, setChargersVisible] = useState(true);
@@ -270,6 +273,9 @@ export function MapView({ scenario, trip }: { scenario: Scenario; trip: TripStat
           instance.getCanvas().style.cursor = 'pointer';
           const f = e.features?.[0];
           if (!f || f.geometry.type !== 'Point') return;
+          // A pinned panel already says this. Adding the hover one would stack a
+          // second panel on the same point and bury the pinned panel's close button.
+          if (pinnedCharger.current) return;
           const p = f.properties as { name: string; stalls: number; kw: number };
           hover
             .setLngLat(f.geometry.coordinates as [number, number])
@@ -288,10 +294,15 @@ export function MapView({ scenario, trip }: { scenario: Scenario; trip: TripStat
           if (!f || f.geometry.type !== 'Point') return;
           const p = f.properties as { name: string; stalls: number; kw: number };
           hover.remove();
-          new mapboxgl.Popup({ offset: 10 })
+          pinnedCharger.current?.remove();
+          const pinned = new mapboxgl.Popup({ offset: 10 })
             .setLngLat(f.geometry.coordinates as [number, number])
             .setHTML(chargerPopupHTML(p))
             .addTo(instance);
+          pinned.on('close', () => {
+            if (pinnedCharger.current === pinned) pinnedCharger.current = null;
+          });
+          pinnedCharger.current = pinned;
         });
 
         for (const stop of scenario.mapStops) {
@@ -344,6 +355,10 @@ export function MapView({ scenario, trip }: { scenario: Scenario; trip: TripStat
   function toggleChargers() {
     const instance = map.current;
     const next = !chargersOn.current;
+    if (!next) {
+      pinnedCharger.current?.remove();
+      pinnedCharger.current = null;
+    }
     chargersOn.current = next;
     setChargersVisible(next);
     if (!instance) return;

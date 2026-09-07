@@ -6,6 +6,10 @@ node_modules
 *.tsbuildinfo
 coverage
 
+# Personal Claude Code settings. Permissions granted here bind whoever set them,
+# so they stay out of the shared checkout.
+.claude/settings.local.json
+
 # >>> agentmemory (managed block; do not edit) >>>
 .githooks/
 .agents/memory/local/

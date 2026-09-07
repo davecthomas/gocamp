@@ -13,4 +13,5 @@ coverage
 # >>> agentmemory (managed block; do not edit) >>>
 .githooks/
 .agents/memory/local/
+.agents/memory/adr/INDEX.md
 # <<< agentmemory <<<
